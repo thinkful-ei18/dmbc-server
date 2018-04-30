@@ -1,0 +1,11 @@
+language: node_js
+node_js: node
+cache: yarn
+script: yarn travis
+deploy:
+  provider: heroku
+  api_key:
+    secure: hAlzf7/0cC6jMDrRrIted0Y1tNMS+HAhydPDuWyBwXwYy7UrDihwHJBCJCDBIiH3wIK9y71SnJ4/DHMmntiGqn65FLWi5MRQixjh8gdcfrCXwbW54Uhy2jhyi52TLJWUPowjfDka/+4vBB9QtENBFz3rQEB/WlkhfahNiWfjOgzZntDpalfMf8F1NAAzfXaAYg+Lsu8Hw/ecEAmjwnltKSKicKFgXaNJcC+qYvpM/tOj389LKBtyy3e4jXbol+utTo8a6w+w4ZaCdlZxk1wWUumxAyxD/kKU7pTQO8I0yAJSY+mqi24P+zdEzymIbnbMW2fhPWBiR7St/+wJb/1eW7UYYna0duV1u9WI95COCa63u+atR9XA/5rKknRWbpibpWFQWB/90zB0nHh3f0CfxBnLiAKyzEAjBsf4YnOM/vchmvXUu1rJV87whlXLkonm+YE9fLvc18F6txMbP3o3ZaJKdF6VLTdV+3hbBLwt1Ls6Ktt1hdJFCsdugcQX1XvwOdxODLEKUGZetj7ABoTMULQijBAZU8TYuGee8cfTN1IVYxrxTuQ9OHher+SKQymMtlHpZ3OCjT9Jc5ax+NiisHMyZ373TBg1ieLCRm0YFSymmDgs4snSLSMN5Q2Ht/0n7DZdznLB4qt0oUheafcwpVof3tSe0X+29AydbLoNk30=
+  app: dmbc-server
+  on:
+    repo: thinkful-ei18/dmbc-server
