@@ -4,11 +4,21 @@ const express = require('express');
 const router = express.Router();
 const { User } = require('../models/user');
 
+router.get('/users', (req, res, next) => {
+  User.find()
+    .then(results => {
+      res.json(results);
+    })
+    .catch(err => {
+      next(err);
+    });
+});
+
 router.post('/users', (req, res, next) => {
   /**
    * A lot of validators for the user API endpoint.
    */
-  const { name, email, password } = req.body;
+  const { name, email, password, ambassador } = req.body;
   const lengthValidation = {
     name: {
       min: 1
@@ -85,7 +95,7 @@ router.post('/users', (req, res, next) => {
    */
   return User.hashPassword(password)
     .then(digest => {
-      const newUser = { name, email, password: digest };
+      const newUser = { name, email, password: digest, ambassador };
       return User.create(newUser);
     })
     .then(response => {
