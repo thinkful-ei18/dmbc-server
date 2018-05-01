@@ -5,7 +5,9 @@ const bcrypt = require('bcryptjs');
 const userSchema = mongoose.Schema({
   email: { type: String, required: true, unique: true },
   name: { type: String, required: true },
-  password: { type: String, required: true }
+  password: { type: String, required: true },
+  ambassador: { type: Boolean, default: false },
+  itineraries: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Itinerary'}]
 });
 
 userSchema.set('toObject', {
