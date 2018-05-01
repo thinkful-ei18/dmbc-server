@@ -42,5 +42,23 @@ router.post('/itinerary', (req, res, next) => {
     });
 });
 
+router.put('/itinerary/:id/cards', (req, res, next) => {
+  let card = req.body.card;
+
+  Itinerary.findById(req.params.id)
+    .then(response => {
+      let newCards = response.cards;
+      newCards.push(card);
+      return Itinerary.findByIdAndUpdate(req.params.id, {
+        cards: newCards
+      }, { new: true });
+    })
+    .then(response => {
+      res.status(201).json(response);
+    })
+    .catch(err => {
+      next(err);
+    });
+});
 
 module.exports = router;

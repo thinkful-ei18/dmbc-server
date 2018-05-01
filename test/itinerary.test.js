@@ -211,4 +211,42 @@ describe('Before and After Hooks', function() {
         });
     });
   });
+
+  describe('PUT /itinerary', function() {
+    it('should update an itinerary with card information', function() {
+      let newItinerary = { card: '522222222222222222222200' };
+
+      return chai
+        .request(app)
+        .put('/api/itinerary/422222222222222222222200/cards')
+        .set('authorization', `Bearer ${token}`)
+        .send(newItinerary)
+        .then(response => {
+          expect(response).to.have.status(201);
+          expect(response.body).to.be.an('object');
+          return Itinerary.findById('422222222222222222222200');
+        })
+        .then(response => {
+          expect(response.cards.length).to.equal(1);
+        });
+    });
+  });
+
+  it('should catch errors and respond properly', function() {
+    const spy = chai.spy();
+    let newItinerary = { card: '522222222222222222222200' };
+    sandbox.stub(express.response, 'json').throws('TypeError');
+    return chai
+      .request(app)
+      .put('/api/itinerary/422222222222222222222200/cards')
+      .set('authorization', `Bearer ${token}`)
+      .send(newItinerary)
+      .then(spy)
+      .catch(err => {
+        expect(err).to.have.status(500);
+      })
+      .then(() => {
+        expect(spy).to.not.have.been.called();
+      });
+  });
 });
