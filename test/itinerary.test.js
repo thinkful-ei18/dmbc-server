@@ -109,7 +109,7 @@ describe('Before and After Hooks', function() {
       });
   });
 
-  describe('GET /cards', function() {
+  describe('GET /itinerary', function() {
     it('should get itineraries for the user', function() {
       return chai
         .request(app)
@@ -155,7 +155,7 @@ describe('Before and After Hooks', function() {
   });
 
   describe('POST /itinerary', function() {
-    it.only('should post a new card with proper attributes', function() {
+    it('should post a new card with proper attributes', function() {
       let newItinerary = { partners: '2 kids', ambassador: '322222222222222222222200' };
 
       return chai
@@ -175,18 +175,18 @@ describe('Before and After Hooks', function() {
     });
 
     it('should 400 error when not all fields are present', function() {
-      let newItem = { content: 'I am a cat' };
+      let newItem = { ambassador: '322222222222222222222200' };
       let spy = chai.spy();
       return chai
         .request(app)
-        .post('/api/cards')
+        .post('/api/itinerary')
         .set('authorization', `Bearer ${token}`)
         .send(newItem)
         .then(spy)
         .catch(err => {
           const res = err.response;
           expect(res).to.have.status(400);
-          expect(res.body.message).to.equal('Must include name');
+          expect(res.body.message).to.equal('Must include Partners');
         })
         .then(() => {
           expect(spy).to.not.have.been.called();
@@ -195,173 +195,19 @@ describe('Before and After Hooks', function() {
 
     it('should catch errors and respond properly', function() {
       const spy = chai.spy();
-      let newItem = { name: 'CATS' };
+      let newItinerary = { partners: '2 kids', ambassador: '322222222222222222222200' };
       sandbox.stub(express.response, 'json').throws('TypeError');
       return chai
         .request(app)
-        .post('/api/cards')
+        .post('/api/itinerary')
         .set('authorization', `Bearer ${token}`)
-        .send(newItem)
+        .send(newItinerary)
         .then(spy)
         .catch(err => {
           expect(err).to.have.status(500);
         })
         .then(() => {
           expect(spy).to.not.have.been.called();
-        });
-    });
-  });
-
-  describe('GET /itinerary', function() {
-    
-
-    it('should return a 422 error when a field is missing', function() {
-      let spy = chai.spy();
-      let newUser = { name: 'tim', email: 'timmy@turner.com' };
-      return chai
-        .request(app)
-        .post('/api/users')
-        .send(newUser)
-        .then(spy)
-        .catch(err => {
-          expect(err).to.have.status(422);
-          expect(err.response.body.message).to.equal(
-            'Missing password in request body'
-          );
-        })
-        .then(() => {
-          expect(spy).to.have.not.been.called;
-        });
-    });
-
-    it('should return a 422 error when a field is not a string', function() {
-      let spy = chai.spy();
-      let newUser = {
-        name: 'tim',
-        password: 1234456789,
-        email: 'timmy@turner.com'
-      };
-      return chai
-        .request(app)
-        .post('/api/users')
-        .send(newUser)
-        .then(spy)
-        .catch(err => {
-          expect(err).to.have.status(422);
-          expect(err.response.body.message).to.equal(
-            'password must be a string'
-          );
-        })
-        .then(() => {
-          expect(spy).to.have.not.been.called;
-        });
-    });
-
-    it('should return a 422 error when a field has leading or trailing whitespace', function() {
-      let spy = chai.spy();
-      let newUser = {
-        name: 'tim',
-        password: ' 1234456789',
-        email: 'timmy@turner.com'
-      };
-      return chai
-        .request(app)
-        .post('/api/users')
-        .send(newUser)
-        .then(spy)
-        .catch(err => {
-          expect(err).to.have.status(422);
-          expect(err.response.body.message).to.equal(
-            'password must not have any leading or trailing whitespace'
-          );
-        })
-        .then(() => {
-          expect(spy).to.have.not.been.called;
-        });
-    });
-
-    it('should return a 422 error when a username exists', function() {
-      let spy = chai.spy();
-      let newUser = {
-        name: 'bobby',
-        password: '1234456789',
-        email: 'bob@bob.com'
-      };
-      return chai
-        .request(app)
-        .post('/api/users')
-        .send(newUser)
-        .then(spy)
-        .catch(err => {
-          expect(err).to.have.status(400);
-          expect(err.response.body.message).to.equal(
-            'That email already exists'
-          );
-        })
-        .then(() => {
-          expect(spy).to.have.not.been.called;
-        });
-    });
-
-    it('should return a 422 error when a username is too short', function() {
-      let spy = chai.spy();
-      let newUser = { email: '', password: '1234456789', name: 'timmy turner' };
-      return chai
-        .request(app)
-        .post('/api/users')
-        .send(newUser)
-        .then(spy)
-        .catch(err => {
-          expect(err).to.have.status(422);
-          expect(err.response.body.message).to.equal(
-            'email must be 5 characters or longer'
-          );
-        })
-        .then(() => {
-          expect(spy).to.have.not.been.called;
-        });
-    });
-
-    it('should return a 422 error when a password is too short', function() {
-      let spy = chai.spy();
-      let newUser = { name: '1', password: '1234', email: 'timmy@turner.com' };
-      return chai
-        .request(app)
-        .post('/api/users')
-        .send(newUser)
-        .then(spy)
-        .catch(err => {
-          expect(err).to.have.status(422);
-          expect(err.response.body.message).to.equal(
-            'password must be 8 characters or longer'
-          );
-        })
-        .then(() => {
-          expect(spy).to.have.not.been.called;
-        });
-    });
-
-    it('should return a 422 error when a password is too long', function() {
-      let spy = chai.spy();
-      let newUser = {
-        name: '1',
-        password:
-          '1234kjdfhglkadjfhglksdjhfgklsdjfhgklsdjhfgkljsdfhglkjsdhfglksjhdfglksjdhfglkjsdhfgklsdjhfglakjshdf;sDJKF;KLAHDGKLJAHDFGLKJHDSFLKJDLKVJBALDBJVAUEHRVUHAELRIUHVAERLGHK',
-        email: 'timmy@turner.com'
-      };
-      return chai
-        .request(app)
-        .post('/api/users')
-        .send(newUser)
-        .then(spy)
-        .catch(err => {
-          expect(err).to.have.status(422);
-          expect(err.response.body.message).to.equal(
-            'password must be 72 characters or smaller'
-          );
-        })
-        .then(() => {
-          expect(spy).to.have.not.been.called;
         });
     });
   });

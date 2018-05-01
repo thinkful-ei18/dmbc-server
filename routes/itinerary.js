@@ -26,8 +26,14 @@ router.get('/itinerary', (req, res, next) => {
 
 router.post('/itinerary', (req, res, next) => {
   let { partners, ambassador, dateStart, dateEnd, destination } = req.body;
-  let newIten = { partners, ambassador, dateStart, dateEnd, destination };
-  Itinerary.create(newIten)
+  let newItinerary = { partners, ambassador, dateStart, dateEnd, destination };
+
+  if (!newItinerary.partners) {
+    let err = new Error('Must include Partners');
+    err.status = 400;
+    return next(err);
+  }
+  Itinerary.create(newItinerary)
     .then(response => {
       res.status(201).json(response);
     })

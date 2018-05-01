@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 
 const itinerarySchema = mongoose.Schema({
-  partners: { type: String },
+  partners: { type: String, required: true },
   ambassador: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   cards: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Card' }],
   dateStart: { type: Date },
