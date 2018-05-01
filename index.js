@@ -8,6 +8,7 @@ const { PORT, CLIENT_ORIGIN } = require('./config');
 const { dbConnect } = require('./db-mongoose');
 const usersRouter = require('./routes/user');
 const authRouter = require('./routes/auth');
+const itineraryRouter = require('./routes/itinerary');
 
 const app = express();
 
@@ -32,6 +33,8 @@ app.use(express.json());
 
 app.use('/api', usersRouter);
 app.use('/api', authRouter);
+
+app.use('/api', itineraryRouter);
 
 app.use(function(req, res, next) {
   const err = new Error('Not Found');
