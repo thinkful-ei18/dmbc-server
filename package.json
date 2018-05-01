@@ -10,7 +10,7 @@
     "test": "cross-env NODE_ENV=test mocha",
     "cover": "cross-env NODE_ENV=test nyc --reporter=lcov --reporter=text-summary mocha */*.test.js",
     "heroku": "node index.js",
-    "travis": "npm run mocha"
+    "travis": "cross-env NODE_ENV=test npm run mocha"
   },
   "author": "DMBC",
   "license": "MIT",
