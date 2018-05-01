@@ -24,5 +24,17 @@ router.get('/itinerary', (req, res, next) => {
     });
 });
 
+router.post('/itinerary', (req, res, next) => {
+  let { partners, ambassador, dateStart, dateEnd, destination } = req.body;
+  let newIten = { partners, ambassador, dateStart, dateEnd, destination };
+  Itinerary.create(newIten)
+    .then(response => {
+      res.status(201).json(response);
+    })
+    .catch(err => {
+      next(err);
+    });
+});
+
 
 module.exports = router;
