@@ -19,7 +19,7 @@ mongoose
   .then(() => Block.ensureIndexes())
   .then(() => {
     console.log('Database wiped and re-initialized');
-    mongoose.disconnect();
+    return mongoose.disconnect();
   })
   .catch(err => {
     console.error(`ERROR: ${err.message}`);
