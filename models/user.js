@@ -7,7 +7,7 @@ const userSchema = mongoose.Schema({
   name: { type: String, required: true },
   password: { type: String, required: true },
   ambassador: { type: Boolean, default: false },
-  itineraries: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Itinerary'}]
+  itineraries: { type: mongoose.Schema.Types.ObjectId, ref: 'Itinerary'}
 });
 
 userSchema.set('toObject', {

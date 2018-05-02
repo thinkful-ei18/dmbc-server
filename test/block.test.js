@@ -121,7 +121,7 @@ describe('Before and After Hooks', function() {
         .set('authorization', `Bearer ${token}`)
         .then(response => {
           expect(response).to.have.status(200);
-          expect(response.body[0].title).to.not.eql(null);
+          expect(response.body.title).to.not.eql(null);
         });
     });
 
@@ -181,6 +181,22 @@ describe('Before and After Hooks', function() {
         });
     });
 
+    it('should associate to the correct itinerary', function() {
+      let newBlock = { date: 1525275224877, title: 'Lunch' };
+
+      return chai
+        .request(app)
+        .post('/api/block')
+        .set('authorization', `Bearer ${token}`)
+        .send(newBlock)
+        .then(() => {
+          return Itinerary.findById('422222222222222222222200');
+        })
+        .then(response => {
+          expect(response.blocks.length).to.equal(2);
+        });
+    });
+
     it('should 400 error when not all fields are present', function() {
       let newItem = { ambassador: '322222222222222222222200' };
       let spy = chai.spy();
@@ -221,7 +237,7 @@ describe('Before and After Hooks', function() {
 
   describe('PUT /block/:id/cards', function() {
     it('should update a block with card information', function() {
-      let newBlock = { card: '522222222222222222222200' };
+      let newBlock = { card: '522222222222222222222201' };
 
       return chai
         .request(app)
@@ -234,7 +250,7 @@ describe('Before and After Hooks', function() {
           return Block.findById('822222222222222222222200');
         })
         .then(response => {
-          expect(response.cards.length).to.equal(1);
+          expect(response.cards.length).to.equal(2);
         });
     });
   });
@@ -255,5 +271,25 @@ describe('Before and After Hooks', function() {
       .then(() => {
         expect(spy).to.not.have.been.called();
       });
+  });
+
+  describe('PUT /block/:id/select', function() {
+    it('should update a block with card information', function() {
+      let update = { selection: '522222222222222222222200' };
+
+      return chai
+        .request(app)
+        .put('/api/block/822222222222222222222200/select')
+        .set('authorization', `Bearer ${token}`)
+        .send(update)
+        .then(response => {
+          expect(response).to.have.status(201);
+          expect(response.body).to.be.an('object');
+          return Block.findById('822222222222222222222200');
+        })
+        .then(response => {
+          expect(response.selectedCard).to.not.equal(null);
+        });
+    });
   });
 });

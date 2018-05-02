@@ -117,7 +117,7 @@ describe('Before and After Hooks', function() {
         .set('authorization', `Bearer ${token}`)
         .then(response => {
           expect(response).to.have.status(200);
-          expect(response.body[0]).to.not.eql(null);
+          expect(response.body).to.not.eql(null);
         });
     });
 
@@ -128,7 +128,7 @@ describe('Before and After Hooks', function() {
         .get('/api/itinerary')
         .set('authorization', `Bearer ${token}`)
         .then(_response => {
-          item = _response.body[0];
+          item = _response.body;
           return Itinerary.findById(item.id);
         })
         .then(response => {
