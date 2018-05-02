@@ -9,6 +9,7 @@ const { dbConnect } = require('./db-mongoose');
 const usersRouter = require('./routes/user');
 const authRouter = require('./routes/auth');
 const cardsRouter = require('./routes/cards');
+const itineraryRouter = require('./routes/itinerary');
 
 const app = express();
 
@@ -39,6 +40,8 @@ app.use(passport.authenticate('jwt',
 );
 
 app.use('/api', cardsRouter);
+
+app.use('/api', itineraryRouter);
 
 app.use(function(req, res, next) {
   const err = new Error('Not Found');
