@@ -37,7 +37,25 @@ router.get('/itinerary', (req, res, next) => {
 });
 
 router.get('/itineraries', (req, res, next) => {
-  Itinerary.find({ambassador: req.user.id})
+  Itinerary.find({ ambassador: req.user.id })
+    .then(response => {
+      res.json(response);
+    })
+    .catch(err => {
+      next(err);
+    });
+});
+
+router.get('/itineraries/:id', (req, res, next) => {
+  Itinerary.find({ _id: req.params.id, ambassador: req.user.id })
+    .populate({
+      path: 'blocks',
+      model: 'Block'
+      // populate: {
+      //   path: 'cards',
+      //   model: 'Card'
+      // }
+    })
     .then(response => {
       res.json(response);
     })
@@ -71,9 +89,13 @@ router.put('/itinerary/:id/cards', (req, res, next) => {
     .then(response => {
       let newCards = response.cards;
       newCards.push(card);
-      return Itinerary.findByIdAndUpdate(req.params.id, {
-        cards: newCards
-      }, { new: true });
+      return Itinerary.findByIdAndUpdate(
+        req.params.id,
+        {
+          cards: newCards
+        },
+        { new: true }
+      );
     })
     .then(response => {
       res.status(201).json(response);
