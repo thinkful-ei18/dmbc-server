@@ -28,6 +28,7 @@ describe('Before and After Hooks', function() {
   });
 
   beforeEach(function() {
+    mongoose.connection.db.dropDatabase();
     return User.insertMany(seedUsers)
       .then(() => User.ensureIndexes())
       .then(() => Itinerary.insertMany(seedItineraries))
