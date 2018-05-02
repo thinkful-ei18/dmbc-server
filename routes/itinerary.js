@@ -19,16 +19,24 @@ router.get('/itinerary', (req, res, next) => {
     .populate({
       path: 'itineraries',
       model: 'Itinerary',
-      populate: {
-        path: 'blocks',
-        model: 'Block'
-        // populate: {
-        //   path: 'cards',
-        //   model: 'Card'
-        // }
-      }
+      populate: [
+        {
+          path: 'blocks',
+          model: 'Block'
+          // populate: {
+          //   path: 'cards',
+          //   model: 'Card'
+          // }
+        },
+        {
+          path: 'destination',
+          model: 'Destination'
+        }
+      ]
     })
+    .populate('destination')
     .then(response => {
+      console.log(response.itineraries);
       res.json(response.itineraries);
     })
     .catch(err => {
@@ -65,9 +73,23 @@ router.get('/itineraries/:id', (req, res, next) => {
 });
 
 router.post('/itinerary', (req, res, next) => {
-  let { partners, ambassador, dateStart, dateEnd, destination, distance, tags } = req.body;
-  
-  let newDestination = { latitude: destination.latitude, longitude: destination.longitude, locationName: destination.label, tags, distance };
+  let {
+    partners,
+    ambassador,
+    dateStart,
+    dateEnd,
+    destination,
+    distance,
+    tags
+  } = req.body;
+
+  let newDestination = {
+    latitude: destination.latitude,
+    longitude: destination.longitude,
+    locationName: destination.label,
+    tags,
+    distance
+  };
 
   if (!req.body.partners) {
     let err = new Error('Must include Partners');
@@ -76,13 +98,20 @@ router.post('/itinerary', (req, res, next) => {
   }
   Destination.create(newDestination)
     .then(response => {
-      let newItinerary = { partners, ambassador, dateStart, dateEnd, destination: response.id };
+      let newItinerary = {
+        partners,
+        ambassador,
+        dateStart,
+        dateEnd,
+        destination: response.id
+      };
       return Itinerary.create(newItinerary);
     })
     .then(response => {
       res.status(201).json(response);
     })
     .catch(err => {
+      console.log(err);
       next(err);
     });
 });

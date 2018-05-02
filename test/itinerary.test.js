@@ -15,9 +15,11 @@ const { TEST_DATABASE_URL, JWT_SECRET } = require('../config');
 const { User } = require('../models/user');
 const { Itinerary } = require('../models/itinerary');
 const { Block } = require('../models/block');
+const { Destination } = require('../models/destination');
 const seedItineraries = require('../db/seed/itineraries');
 const seedUsers = require('../db/seed/users');
 const seedBlocks = require('../db/seed/blocks');
+const seedDestinations = require('../db/seed/destinations');
 
 const sinon = require('sinon');
 const sandbox = sinon.createSandbox();
@@ -34,6 +36,8 @@ describe('Before and After Hooks', function() {
       .then(() => Itinerary.ensureIndexes())
       .then(() => Block.insertMany(seedBlocks))
       .then(() => Block.ensureIndexes())
+      .then(() => Destination.insertMany(seedDestinations))
+      .then(() => Destination.ensureIndexes())
       .then(() => User.findById('322222222222222222222200'))
       .then(response => {
         token = jwt.sign(
@@ -114,7 +118,7 @@ describe('Before and After Hooks', function() {
   });
 
   describe('GET /itinerary', function() {
-    it('should get a users populated itinerary', function() {
+    it.only('should get a users populated itinerary', function() {
       return chai
         .request(app)
         .get('/api/itinerary')
@@ -122,6 +126,9 @@ describe('Before and After Hooks', function() {
         .then(response => {
           expect(response).to.have.status(200);
           expect(response.body.blocks.length).to.equal(1);
+          expect(response.body.destination.locationName).to.equal(
+            'Mexico City'
+          );
         });
     });
 
@@ -234,7 +241,19 @@ describe('Before and After Hooks', function() {
 
   describe('POST /itinerary', function() {
     it('should post a new card with proper attributes', function() {
-      let newItinerary = { partners: '2 kids', ambassador: '322222222222222222222200' };
+      let newDestination = {
+        label: 'Mexico City',
+        latitude: 19.2464696,
+        longitude: -99.10134979999998
+      };
+
+      let newItinerary = {
+        partners: '2 kids',
+        ambassador: '322222222222222222222200',
+        destination: newDestination,
+        distance: 5,
+        tags: ['I have a kid']
+      };
 
       return chai
         .request(app)
@@ -246,6 +265,10 @@ describe('Before and After Hooks', function() {
           expect(response.body).to.be.an('object');
           expect(response.body.partners).to.equal(newItinerary.partners);
           return Itinerary.count();
+        })
+        .then(response => {
+          expect(response).to.equal(2);
+          return Destination.count();
         })
         .then(response => {
           expect(response).to.equal(2);
@@ -273,7 +296,10 @@ describe('Before and After Hooks', function() {
 
     it('should catch errors and respond properly', function() {
       const spy = chai.spy();
-      let newItinerary = { partners: '2 kids', ambassador: '322222222222222222222200' };
+      let newItinerary = {
+        partners: '2 kids',
+        ambassador: '322222222222222222222200'
+      };
       sandbox.stub(express.response, 'json').throws('TypeError');
       return chai
         .request(app)
