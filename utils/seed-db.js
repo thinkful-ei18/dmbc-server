@@ -17,10 +17,7 @@ mongoose
   .then(() => User.ensureIndexes())
   .then(() => Itinerary.ensureIndexes())
   .then(() => Block.ensureIndexes())
-  .then(() => {
-    console.log('Database wiped and re-initialized');
-    return mongoose.disconnect();
-  })
+  .then(() => mongoose.disconnect())
   .catch(err => {
     console.error(`ERROR: ${err.message}`);
     console.error(err);
