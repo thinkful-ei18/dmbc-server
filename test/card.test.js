@@ -18,7 +18,7 @@ const { User } = require('../models/user');
 const seedUsers = require('../db/seed/users');
 
 const sinon = require('sinon');
-const sandbox = sinon.sandbox.create();
+const sandbox = sinon.createSandbox();
 describe('Before and After Hooks', function() {
   let token;
   before(function() {

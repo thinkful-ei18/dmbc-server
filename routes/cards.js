@@ -3,9 +3,14 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
+const passport = require('passport');
 
 const { Card } = require('../models/card');
 const { User } = require('../models/user');
+
+router.use(
+  passport.authenticate('jwt', { session: false, failWithError: true })
+);
 
 function validateAmbassador(userId) {
   if (!userId) {
