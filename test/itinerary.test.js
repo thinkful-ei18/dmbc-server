@@ -124,6 +124,22 @@ describe('Before and After Hooks', function() {
           expect(response.body.blocks.length).to.equal(1);
         });
     });
+
+    it('should catch errors and respond properly', function() {
+      const spy = chai.spy();
+      sandbox.stub(express.response, 'json').throws('TypeError');
+      return chai
+        .request(app)
+        .get('/api/itinerary')
+        .set('authorization', `Bearer ${token}`)
+        .then(spy)
+        .catch(err => {
+          expect(err).to.have.status(500);
+        })
+        .then(() => {
+          expect(spy).to.not.have.been.called();
+        });
+    });
   });
 
   describe('GET /itineraries', function() {
@@ -160,6 +176,51 @@ describe('Before and After Hooks', function() {
       return chai
         .request(app)
         .get('/api/itineraries')
+        .set('authorization', `Bearer ${token}`)
+        .then(spy)
+        .catch(err => {
+          expect(err).to.have.status(500);
+        })
+        .then(() => {
+          expect(spy).to.not.have.been.called();
+        });
+    });
+  });
+
+  describe('GET /itineraries/:id', function() {
+    it('should get a populated itinerary for the ambassador', function() {
+      return chai
+        .request(app)
+        .get('/api/itineraries/422222222222222222222200')
+        .set('authorization', `Bearer ${token}`)
+        .then(response => {
+          expect(response).to.have.status(200);
+          expect(response.body).to.not.eql(null);
+        });
+    });
+
+    it('should return the correct values', function() {
+      let item;
+      return chai
+        .request(app)
+        .get('/api/itineraries/422222222222222222222200')
+        .set('authorization', `Bearer ${token}`)
+        .then(_response => {
+          item = _response.body;
+          return Itinerary.findById(item[0].id);
+        })
+        .then(response => {
+          expect(item[0].id).to.equal(response.id);
+          expect(item[0].partners).to.equal(response.partners);
+        });
+    });
+
+    it('should catch errors and respond properly', function() {
+      const spy = chai.spy();
+      sandbox.stub(express.response, 'json').throws('TypeError');
+      return chai
+        .request(app)
+        .get('/api/itineraries/422222222222222222222200')
         .set('authorization', `Bearer ${token}`)
         .then(spy)
         .catch(err => {
