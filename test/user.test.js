@@ -20,11 +20,11 @@ const sandbox = sinon.createSandbox();
 describe('Before and After Hooks', function() {
   let token;
   before(function() {
-    mongoose.connect(TEST_DATABASE_URL, { autoIndex: false });
-    return mongoose.connection.db.dropDatabase();
+    return mongoose.connect(TEST_DATABASE_URL, { autoIndex: false });
   });
 
   beforeEach(function() {
+    mongoose.connection.db.dropDatabase();
     return User.insertMany(seedUsers)
       .then(() => User.ensureIndexes())
       .then(() => User.findById('322222222222222222222200'))
