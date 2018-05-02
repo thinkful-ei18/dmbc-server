@@ -36,7 +36,6 @@ router.get('/itinerary', (req, res, next) => {
     })
     .populate('destination')
     .then(response => {
-      console.log(response.itineraries);
       res.json(response.itineraries);
     })
     .catch(err => {
@@ -111,7 +110,6 @@ router.post('/itinerary', (req, res, next) => {
       res.status(201).json(response);
     })
     .catch(err => {
-      console.log(err);
       next(err);
     });
 });
