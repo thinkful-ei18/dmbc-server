@@ -20,7 +20,8 @@ const sandbox = sinon.createSandbox();
 describe('Before and After Hooks', function() {
   let token;
   before(function() {
-    return mongoose.connect(TEST_DATABASE_URL, { autoIndex: false });
+    mongoose.connect(TEST_DATABASE_URL, { autoIndex: false });
+    return mongoose.connection.db.dropDatabase();
   });
 
   beforeEach(function() {
