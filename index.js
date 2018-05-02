@@ -9,6 +9,7 @@ const { dbConnect } = require('./db-mongoose');
 const usersRouter = require('./routes/user');
 const authRouter = require('./routes/auth');
 const itineraryRouter = require('./routes/itinerary');
+const blockRouter = require('./routes/block');
 
 const app = express();
 
@@ -35,6 +36,7 @@ app.use('/api', usersRouter);
 app.use('/api', authRouter);
 
 app.use('/api', itineraryRouter);
+app.use('/api', blockRouter);
 
 app.use(function(req, res, next) {
   const err = new Error('Not Found');

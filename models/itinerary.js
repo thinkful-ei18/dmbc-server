@@ -5,6 +5,7 @@ const itinerarySchema = mongoose.Schema({
   partners: { type: String, required: true },
   ambassador: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   cards: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Card' }],
+  blocks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Block'}],
   dateStart: { type: Date },
   dateEnd: { type: Date },
   destination: { type: mongoose.Schema.Types.ObjectId, ref: 'Destination' }
