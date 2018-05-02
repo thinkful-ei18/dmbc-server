@@ -14,8 +14,10 @@ const mongoose = require('mongoose');
 const { TEST_DATABASE_URL, JWT_SECRET } = require('../config');
 const { User } = require('../models/user');
 const { Itinerary } = require('../models/itinerary');
+const { Block } = require('../models/block');
 const seedItineraries = require('../db/seed/itineraries');
 const seedUsers = require('../db/seed/users');
+const seedBlocks = require('../db/seed/blocks');
 
 const sinon = require('sinon');
 const sandbox = sinon.createSandbox();
@@ -30,6 +32,8 @@ describe('Before and After Hooks', function() {
       .then(() => User.ensureIndexes())
       .then(() => Itinerary.insertMany(seedItineraries))
       .then(() => Itinerary.ensureIndexes())
+      .then(() => Block.insertMany(seedBlocks))
+      .then(() => Block.ensureIndexes())
       .then(() => User.findById('322222222222222222222200'))
       .then(response => {
         token = jwt.sign(
@@ -110,10 +114,23 @@ describe('Before and After Hooks', function() {
   });
 
   describe('GET /itinerary', function() {
-    it('should get itineraries for the user', function() {
+    it('should get a users populated itinerary', function() {
       return chai
         .request(app)
         .get('/api/itinerary')
+        .set('authorization', `Bearer ${token}`)
+        .then(response => {
+          expect(response).to.have.status(200);
+          expect(response.body.blocks.length).to.equal(1);
+        });
+    });
+  });
+
+  describe('GET /itineraries', function() {
+    it('should get itineraries for the ambassador', function() {
+      return chai
+        .request(app)
+        .get('/api/itineraries')
         .set('authorization', `Bearer ${token}`)
         .then(response => {
           expect(response).to.have.status(200);
@@ -125,15 +142,15 @@ describe('Before and After Hooks', function() {
       let item;
       return chai
         .request(app)
-        .get('/api/itinerary')
+        .get('/api/itineraries')
         .set('authorization', `Bearer ${token}`)
         .then(_response => {
           item = _response.body;
-          return Itinerary.findById(item.id);
+          return Itinerary.findById(item[0].id);
         })
         .then(response => {
-          expect(item.id).to.equal(response.id);
-          expect(item.partners).to.equal(response.partners);
+          expect(item[0].id).to.equal(response.id);
+          expect(item[0].partners).to.equal(response.partners);
         });
     });
 
@@ -142,7 +159,7 @@ describe('Before and After Hooks', function() {
       sandbox.stub(express.response, 'json').throws('TypeError');
       return chai
         .request(app)
-        .get('/api/itinerary')
+        .get('/api/itineraries')
         .set('authorization', `Bearer ${token}`)
         .then(spy)
         .catch(err => {
