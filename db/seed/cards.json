@@ -1,0 +1,46 @@
+[
+  {
+      "ambassador": [
+          "322222222222222222222200"
+      ],
+      "name": "Foo Bar",
+      "description": "Bar of Foos",
+      "address": "1152 Foobar Street, BarFoo, FB",
+      "hours": "12pm - 8pm",
+      "rating": 4,
+      "id": "5ae8ad6ea9ea1724941f76ec"
+  },
+  {
+      "ambassador": [
+          "322222222222222222222200"
+      ],
+      "name": "Foo Bar Test",
+      "description": "Bar of Foos",
+      "address": "1152 Foobar Street, BarFoo, FB",
+      "hours": "12pm - 8pm",
+      "rating": 4,
+      "id": "5ae8b0da051d8c03b085e712"
+  },
+  {
+      "ambassador": [
+          "322222222222222222222200"
+      ],
+      "name": "Foo Bar Test",
+      "description": "Bar of Foos",
+      "address": "1152 Foobar Street, BarFoo, FB",
+      "hours": "12pm - 8pm",
+      "rating": 4,
+      "id": "5ae8b0da051d8c03b085e713"
+  },
+  {
+      "ambassador": [
+          "322222222222222222222200"
+      ],
+      "name": "Foo Bar Test1",
+      "description": "Bar of Foos",
+      "address": "1152 Foobar Street, BarFoo, FB",
+      "hours": "12pm - 8pm",
+      "rating": 4,
+      "id": "5ae8b12ea6177c18e4badabe"
+  }
+]

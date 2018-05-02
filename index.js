@@ -33,6 +33,11 @@ app.use(express.json());
 
 app.use('/api', usersRouter);
 app.use('/api', authRouter);
+
+app.use(passport.authenticate('jwt',
+  {session: false, failWithError: true})
+);
+
 app.use('/api', cardsRouter);
 
 app.use(function(req, res, next) {

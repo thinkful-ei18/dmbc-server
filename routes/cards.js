@@ -128,58 +128,7 @@ router.post('/cards', (req, res, next) => {
 });
 
 /* ========== PUT/UPDATE A SINGLE ITEM ========== */
-router.put('/notes/:id', (req, res, next) => {
-  const { id } = req.params;
-  const { name, description, address, hours, ambassador, rating } = req.body;
-  const userId = req.user.id;
-
-  /***** Never trust users - validate input *****/
-  if (!name) {
-    const err = new Error('Missing `title` in request body');
-    err.status = 400;
-    return next(err);
-  }
-
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    const err = new Error('The `id` is not valid');
-    err.status = 400;
-    return next(err);
-  }
-
-  const updateCard = { name, description, address, hours, ambassador, rating };
-
-  if (mongoose.Types.ObjectId.isValid(ambassador)) {
-    updateCard.ambassador = ambassador;
-  }
-
-  const options = { new: true };
-
-  const valAmbassadorProm = valAmbassadorProm(ambassador);
-
-  Promise.all([valAmbassadorProm])
-    .then(() => Card.findByIdAndUpdate(id, updateCard, options)
-    )
-    .then(result => {
-      if (result) {
-        res.json(result);
-      } else {
-        next();
-      }
-    })
-    .catch(err => {
-      if (err === 'InvalidUser') {
-        err = new Error('The user is not valid');
-        err.status = 400;
-      }
-      if (err === 'NotAmbassador') {
-        err = new Error('The user is not an ambassador');
-        err.status = 400;
-      }
-      console.log(err);
-
-      next(err);
-    });
-});
+// Not sure what to do yet
 
 /* ========== DELETE/REMOVE A SINGLE ITEM ========== */
 router.delete('/cards/:id', (req, res, next) => {
