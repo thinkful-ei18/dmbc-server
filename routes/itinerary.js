@@ -116,8 +116,15 @@ router.post('/itinerary', (req, res, next) => {
     .then(() => {
       res.status(201).json(itinerary);
     })
-    .catch(err => {
-      next(err);
+    .then(ambassador => {
+      let newItinerary = { partners, ambassador, dateStart, dateEnd, destination };
+      Itinerary.create(newItinerary)
+        .then(response => {
+          res.status(201).json(response);
+        })
+        .catch(err => {
+          next(err);
+        });
     });
 });
 
