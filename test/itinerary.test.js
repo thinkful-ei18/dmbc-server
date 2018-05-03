@@ -244,8 +244,10 @@ describe('Before and After Hooks', function() {
     it('should post a new card with proper attributes', function() {
       let newDestination = {
         label: 'Mexico City',
-        latitude: 19.2464696,
-        longitude: -99.10134979999998
+        location: {
+          lat: 19.2464696,
+          lng: -99.10134979999998
+        }
       };
 
       let newItinerary = {
@@ -281,7 +283,7 @@ describe('Before and After Hooks', function() {
     });
 
     it('should 400 error when not all fields are present', function() {
-      let newDestination = { label: 'Mexico City', latitude: 19.2464696, longitude: -99.10134979999998 };
+      let newDestination = { label: 'Mexico City', location: { lat: 19.2464696, lng: -99.10134979999998 } };
 
       let newItinerary = { ambassador: '322222222222222222222200', destination: newDestination, distance: 5, tags: ['I have a kid'] };
       let spy = chai.spy();

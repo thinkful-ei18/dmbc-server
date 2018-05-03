@@ -83,8 +83,8 @@ router.post('/itinerary', (req, res, next) => {
   } = req.body;
 
   let newDestination = {
-    latitude: destination.latitude,
-    longitude: destination.longitude,
+    latitude: destination.location.lat,
+    longitude: destination.location.lng,
     locationName: destination.label,
     tags,
     distance
