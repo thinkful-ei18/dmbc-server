@@ -14,7 +14,7 @@ router.use(
 
 function validateAmbassador(userId) {
   if (!userId) {
-    return Promise.resolve();
+    return Promise.reject();
   }
   return User.findOne({ _id: userId })
     .then(result => {
@@ -28,7 +28,22 @@ function validateAmbassador(userId) {
 
 /* ========== GET/READ ALL ITEM ========== */
 router.get('/cards', (req, res, next) => {
-  Card.find()
+  const searchTerm = req.query.searchTerm;
+
+  let filter = {};
+  let projection = {};
+
+  if (searchTerm) {
+    filter.$text = {
+      $search: searchTerm
+    };
+    projection.score = {
+      $meta: 'textScore'
+    };
+  }
+
+  Card.find(filter, projection)
+    .sort(projection)
     .then(results => {
       res.json(results);
     })
@@ -61,8 +76,6 @@ router.get('/cards/:id', (req, res, next) => {
 /* ========== POST/CREATE AN ITEM ========== */
 router.post('/cards', (req, res, next) => {
   const { name, description, address, hours, ambassador, rating, tips } = req.body;
-
-  const valAmbassadorProm = validateAmbassador(ambassador);
 
   const requiredFields = ['name', 'description', 'address', 'hours', 'ambassador', 'rating'];
   const hasFields = requiredFields.every(field => {
@@ -115,7 +128,7 @@ router.post('/cards', (req, res, next) => {
     tips
   };
 
-  Promise.all([valAmbassadorProm])
+  validateAmbassador(ambassador)
     .then(() => Card.create(newCard))
     .then(result => {
       res.location(`${req.originalUrl}/${result.id}`).status(201).json(result);
@@ -151,6 +164,12 @@ router.put('/cards/:id', (req, res, next) => {
     return next(err);
   }
 
+  if (req.body.id !== req.params.id) {
+    const err = new Error('Id\'s do not match');
+    err.status = 400;
+    return next(err);
+  }
+
   const updateItem = { 
     name, 
     description, 
@@ -163,9 +182,7 @@ router.put('/cards/:id', (req, res, next) => {
 
   const options = { new: true };
 
-  const valAmbassadorProm = validateAmbassador(ambassador);
-
-  Promise.all([valAmbassadorProm])
+  validateAmbassador(ambassador)
     .then(() => Card.findByIdAndUpdate(id, updateItem, options))
     .then(result => {
       if (result) {
@@ -175,14 +192,68 @@ router.put('/cards/:id', (req, res, next) => {
       }
     })
     .catch(err => {
-      if (err === 'InvalidFolder') {
-        err = new Error('The folder is not valid');
-        err.status = 400;
+      next(err);
+    });
+});
+
+/* ========== PUT/UPDATE Rating ========== */
+router.put('/cards/:id/rate', (req, res, next) => {
+  const { id } = req.params;
+  const { rating } = req.body;
+
+  if (!rating) {
+    const err = new Error('Rating is empty');
+    err.status = 400;
+    return next(err);
+  }
+
+  /***** Never trust users - validate input *****/
+  const options = { new: true };
+
+  Card.findById({_id: id})
+    .then(result => {
+      if (result) {
+        result.rating.push(rating);
+        return Card.findByIdAndUpdate(id, {rating: result.rating}, options);
+      } else {
+        next();
       }
-      if (err === 'InvalidTag') {
-        err = new Error('The tag is not valid');
-        err.status = 400;
+    })
+    .then(response => {
+      res.json(response);
+    })
+    .catch(err => {
+      next(err);
+    });
+});
+
+/* ========== PUT/UPDATE Tips ========== */
+router.put('/cards/:id/tips', (req, res, next) => {
+  const { id } = req.params;
+  const { tips } = req.body;
+
+  if (!tips) {
+    const err = new Error('Tips is empty');
+    err.status = 400;
+    return next(err);
+  }
+
+  /***** Never trust users - validate input *****/
+  const options = { new: true };
+
+  Card.findById({_id: id})
+    .then(result => {
+      if (result) {
+        result.tips.push(tips);
+        return Card.findByIdAndUpdate(id, {tips: result.tips}, options);
+      } else {
+        next();
       }
+    })
+    .then(response => {
+      res.json(response);
+    })
+    .catch(err => {
       next(err);
     });
 });
