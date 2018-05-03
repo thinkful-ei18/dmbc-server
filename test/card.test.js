@@ -19,7 +19,7 @@ const seedUsers = require('../db/seed/users');
 
 const sinon = require('sinon');
 const sandbox = sinon.createSandbox();
-describe('Before and After Hooks', function() {
+describe.only('Card Test', function() {
   let token;
   before(function() {
     return mongoose.connect(TEST_DATABASE_URL, { autoIndex: false });
@@ -73,75 +73,75 @@ describe('Before and After Hooks', function() {
           expect(res).to.have.status(401);
         });
     });
-  });
 
-  it('Should reject requests with an invalid token', function() {
-    return User.findById('322222222222222222222200')
-      .then(response => {
-        return jwt.sign(
-          {
-            user: {
-              email: response.email,
-              id: response.id
-            }
-          },
-          'wrong',
-          {
-            algorithm: 'HS256',
-            subject: response.email,
-            expiresIn: '7d'
-          }
-        );
-      })
-      .then(token => {
-        return chai
-          .request(app)
-          .get('/api/cards')
-          .set('Authorization', `Bearer ${token}`);
-      })
-      .then(() => expect.fail(null, null, 'Request should not succeed'))
-      .catch(err => {
-        if (err instanceof chai.AssertionError) {
-          throw err;
-        }
-        const res = err.response;
-        expect(res).to.have.status(401);
-      });
-  });
-
-  it('Should reject requests with an expired token', function() {
-    return User.findById('322222222222222222222200')
-      .then(response => {
-        return jwt.sign(
-          {
-            user: {
-              email: response.email,
-              id: response.id
+    it('Should reject requests with an invalid token', function() {
+      return User.findById('322222222222222222222200')
+        .then(response => {
+          return jwt.sign(
+            {
+              user: {
+                email: response.email,
+                id: response.id
+              }
             },
-            expiresIn: Math.floor(Date.now() / 1000) - 10
-          },
-          'wrong',
-          {
-            algorithm: 'HS256',
-            subject: response.email,
-            expiresIn: '7d'
+            'wrong',
+            {
+              algorithm: 'HS256',
+              subject: response.email,
+              expiresIn: '7d'
+            }
+          );
+        })
+        .then(token => {
+          return chai
+            .request(app)
+            .get('/api/cards')
+            .set('Authorization', `Bearer ${token}`);
+        })
+        .then(() => expect.fail(null, null, 'Request should not succeed'))
+        .catch(err => {
+          if (err instanceof chai.AssertionError) {
+            throw err;
           }
-        );
-      })
-      .then(token => {
-        return chai
-          .request(app)
-          .get('/api/cards')
-          .set('Authorization', `Bearer ${token}`);
-      })
-      .then(() => expect.fail(null, null, 'Request should not succeed'))
-      .catch(err => {
-        if (err instanceof chai.AssertionError) {
-          throw err;
-        }
-        const res = err.response;
-        expect(res).to.have.status(401);
-      });
+          const res = err.response;
+          expect(res).to.have.status(401);
+        });
+    });
+
+    it('Should reject requests with an expired token', function() {
+      return User.findById('322222222222222222222200')
+        .then(response => {
+          return jwt.sign(
+            {
+              user: {
+                email: response.email,
+                id: response.id
+              },
+              expiresIn: Math.floor(Date.now() / 1000) - 10
+            },
+            'wrong',
+            {
+              algorithm: 'HS256',
+              subject: response.email,
+              expiresIn: '7d'
+            }
+          );
+        })
+        .then(token => {
+          return chai
+            .request(app)
+            .get('/api/cards')
+            .set('Authorization', `Bearer ${token}`);
+        })
+        .then(() => expect.fail(null, null, 'Request should not succeed'))
+        .catch(err => {
+          if (err instanceof chai.AssertionError) {
+            throw err;
+          }
+          const res = err.response;
+          expect(res).to.have.status(401);
+        });
+    });
   });
 
   describe('GET /cards', function() {

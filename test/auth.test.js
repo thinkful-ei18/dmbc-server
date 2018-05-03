@@ -17,7 +17,7 @@ const seedUsers = require('../db/seed/users');
 
 const sinon = require('sinon');
 const sandbox = sinon.createSandbox();
-describe('Before and After Hooks', function() {
+describe('Auth Test', function() {
   let token;
   before(function() {
     return mongoose.connect(TEST_DATABASE_URL, { autoIndex: false });
