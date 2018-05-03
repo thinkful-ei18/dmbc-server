@@ -119,7 +119,7 @@ describe('Before and After Hooks', function() {
   });
 
   describe('GET /itinerary', function() {
-    it.only('should get a users populated itinerary', function() {
+    it('should get a users populated itinerary', function() {
       return chai
         .request(app)
         .get('/api/itinerary')
@@ -273,17 +273,23 @@ describe('Before and After Hooks', function() {
         })
         .then(response => {
           expect(response).to.equal(2);
+          return User.findById('322222222222222222222200');
+        })
+        .then(response => {
+          expect(response.itineraries).to.not.equal(null);
         });
     });
 
     it('should 400 error when not all fields are present', function() {
-      let newItem = { ambassador: '322222222222222222222200' };
+      let newDestination = { label: 'Mexico City', latitude: 19.2464696, longitude: -99.10134979999998 };
+
+      let newItinerary = { ambassador: '322222222222222222222200', destination: newDestination, distance: 5, tags: ['I have a kid'] };
       let spy = chai.spy();
       return chai
         .request(app)
         .post('/api/itinerary')
         .set('authorization', `Bearer ${token}`)
-        .send(newItem)
+        .send(newItinerary)
         .then(spy)
         .catch(err => {
           const res = err.response;

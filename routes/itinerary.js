@@ -90,11 +90,14 @@ router.post('/itinerary', (req, res, next) => {
     distance
   };
 
+  let itinerary;
+
   if (!req.body.partners) {
     let err = new Error('Must include Partners');
     err.status = 400;
     return next(err);
   }
+  
   Destination.create(newDestination)
     .then(response => {
       let newItinerary = {
@@ -107,7 +110,11 @@ router.post('/itinerary', (req, res, next) => {
       return Itinerary.create(newItinerary);
     })
     .then(response => {
-      res.status(201).json(response);
+      itinerary = response;
+      return User.findByIdAndUpdate(req.user.id, { itineraries: response.id });
+    })
+    .then(() => {
+      res.status(201).json(itinerary);
     })
     .catch(err => {
       next(err);
