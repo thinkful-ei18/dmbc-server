@@ -12,7 +12,6 @@ router.use(
 );
 
 router.get('/blocks', (req, res, next) => {
-  console.log(req.user.id);
   User.findById(req.user.id)
     .populate({
       path: 'itineraries',
@@ -27,7 +26,6 @@ router.get('/blocks', (req, res, next) => {
       }
     })
     .then(response => {
-      console.log(response);
       res.json(response.itineraries.blocks);
     })
     .catch(err => {
