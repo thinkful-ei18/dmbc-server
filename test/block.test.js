@@ -272,25 +272,25 @@ describe('Block Test', function() {
           expect(spy).to.not.have.been.called();
         });
     });
+  });
 
-    describe('PUT /block/:id/select', function() {
-      it('should update a block with card information', function() {
-        let update = { selection: '522222222222222222222200' };
+  describe('PUT /block/:id/select', function() {
+    it('should update a block with card information', function() {
+      let update = { selection: '522222222222222222222200' };
 
-        return chai
-          .request(app)
-          .put('/api/block/822222222222222222222200/select')
-          .set('authorization', `Bearer ${token}`)
-          .send(update)
-          .then(response => {
-            expect(response).to.have.status(201);
-            expect(response.body).to.be.an('object');
-            return Block.findById('822222222222222222222200');
-          })
-          .then(response => {
-            expect(response.selectedCard).to.not.equal(null);
-          });
-      });
+      return chai
+        .request(app)
+        .put('/api/block/822222222222222222222200/select')
+        .set('authorization', `Bearer ${token}`)
+        .send(update)
+        .then(response => {
+          expect(response).to.have.status(201);
+          expect(response.body).to.be.an('object');
+          return Block.findById('822222222222222222222200');
+        })
+        .then(response => {
+          expect(response.selectedCard).to.not.equal(null);
+        });
     });
   });
 });
