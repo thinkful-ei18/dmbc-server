@@ -283,7 +283,6 @@ describe('Itinerary Test', function() {
     });
 
     it('should 400 error when not all fields are present', function() {
-<<<<<<< HEAD
       let newDestination = {
         label: 'Mexico City',
         location: {
@@ -298,9 +297,6 @@ describe('Itinerary Test', function() {
         blocks: ['822222222222222222222200'],
         tags: ['I have a kid']
       };
-=======
-      let newDestination = { label: 'Mexico City', location: { lat: 19.2464696, lng: -99.10134979999998 } };
->>>>>>> Fix more failing tests
 
       let spy = chai.spy();
       return chai
