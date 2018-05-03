@@ -60,7 +60,7 @@ router.get('/cards/:id', (req, res, next) => {
 
 /* ========== POST/CREATE AN ITEM ========== */
 router.post('/cards', (req, res, next) => {
-  const { name, description, address, hours, ambassador, rating } = req.body;
+  const { name, description, address, hours, ambassador, rating, tips } = req.body;
 
   const valAmbassadorProm = validateAmbassador(ambassador);
 
@@ -92,7 +92,7 @@ router.post('/cards', (req, res, next) => {
     });
   }
 
-  const trimmedField = requiredFields.every(field => {
+  const trimmedField = stringFields.every(field => {
     return req.body[field].trim() === req.body[field];
   });
 
@@ -111,7 +111,8 @@ router.post('/cards', (req, res, next) => {
     address, 
     hours, 
     ambassador, 
-    rating 
+    rating,
+    tips
   };
 
   Promise.all([valAmbassadorProm])
@@ -133,7 +134,50 @@ router.post('/cards', (req, res, next) => {
 });
 
 /* ========== PUT/UPDATE A SINGLE ITEM ========== */
-// Not sure what to do yet
+router.put('/cards/:id', (req, res, next) => {
+  const { id } = req.params;
+  const { name, description, address, hours, ambassador, rating, tips } = req.body;
+
+  /***** Never trust users - validate input *****/
+  if (!name) {
+    const err = new Error('Missing `name` in request body');
+    err.status = 400;
+    return next(err);
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    const err = new Error('The `id` is not valid');
+    err.status = 400;
+    return next(err);
+  }
+
+  const updateItem = { name, description, address, hours, ambassador, rating, tips };
+
+  const options = { new: true };
+
+  const valAmbassadorProm = validateAmbassador(ambassador);
+
+  Promise.all([valAmbassadorProm])
+    .then(() => Card.findByIdAndUpdate(id, updateItem, options))
+    .then(result => {
+      if (result) {
+        res.json(result);
+      } else {
+        next();
+      }
+    })
+    .catch(err => {
+      if (err === 'InvalidFolder') {
+        err = new Error('The folder is not valid');
+        err.status = 400;
+      }
+      if (err === 'InvalidTag') {
+        err = new Error('The tag is not valid');
+        err.status = 400;
+      }
+      next(err);
+    });
+});
 
 /* ========== DELETE/REMOVE A SINGLE ITEM ========== */
 router.delete('/cards/:id', (req, res, next) => {

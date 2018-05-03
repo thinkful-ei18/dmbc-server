@@ -7,7 +7,8 @@ const cardSchema = mongoose.Schema({
   address: { type: String, required: true },
   hours: {type: String, require: true},
   ambassador: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User'}],
-  rating: {type: Number, required: true}
+  rating: {type: Number, required: true},
+  tips: {type: Array, default: []}
 });
 
 cardSchema.set('toObject', {
