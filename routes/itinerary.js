@@ -2,20 +2,22 @@
 
 const express = require('express');
 const router = express.Router();
-const { User } = require('../models/user');
-const { Itinerary } = require('../models/itinerary');
-const { Destination } = require('../models/destination');
+const {User} = require('../models/user');
+const {Itinerary} = require('../models/itinerary');
+const {Destination} = require('../models/destination');
 const passport = require('passport');
 
 /**
  * Router uses JWT to protect all endpoints here.
  */
-router.use(
-  passport.authenticate('jwt', { session: false, failWithError: true })
-);
+router.use(passport.authenticate('jwt', {
+  session: false,
+  failWithError: true
+}));
 
 router.get('/itinerary', (req, res, next) => {
-  User.findById(req.user.id)
+  User
+    .findById(req.user.id)
     .populate({
       path: 'itineraries',
       model: 'Itinerary',
@@ -23,12 +25,8 @@ router.get('/itinerary', (req, res, next) => {
         {
           path: 'blocks',
           model: 'Block'
-          // populate: {
-          //   path: 'cards',
-          //   model: 'Card'
-          // }
-        },
-        {
+          // populate: {   path: 'cards',   model: 'Card' }
+        }, {
           path: 'destination',
           model: 'Destination'
         }
@@ -44,7 +42,8 @@ router.get('/itinerary', (req, res, next) => {
 });
 
 router.get('/itineraries', (req, res, next) => {
-  Itinerary.find({ ambassador: req.user.id })
+  Itinerary
+    .find({ambassador: req.user.id})
     .then(response => {
       res.json(response);
     })
@@ -54,14 +53,11 @@ router.get('/itineraries', (req, res, next) => {
 });
 
 router.get('/itineraries/:id', (req, res, next) => {
-  Itinerary.find({ _id: req.params.id, ambassador: req.user.id })
+  Itinerary
+    .find({_id: req.params.id, ambassador: req.user.id})
     .populate({
-      path: 'blocks',
-      model: 'Block'
-      // populate: {
-      //   path: 'cards',
-      //   model: 'Card'
-      // }
+      path: 'blocks', model: 'Block'
+      // populate: {   path: 'cards',   model: 'Card' }
     })
     .then(response => {
       res.json(response);
@@ -99,53 +95,53 @@ router.post('/itinerary', (req, res, next) => {
     return next(err);
   }
 
-  User.find({ambassador: 'true'})
+  User
+    .find({ambassador: 'true'})
     .then(results => {
       let number = Math.floor(Math.random() * Math.floor(results.length));
       ambassador = results[number].id;
     })
+    .then(() => Destination.create(newDestination))
+    .then(response => {
+      let newItinerary = {
+        partners,
+        ambassador,
+        dateStart,
+        dateEnd,
+        destination: response.id
+      };
+      return Itinerary.create(newItinerary);
+    })
+    .then(response => {
+      itinerary = response;
+      return User.findByIdAndUpdate(req.user.id, {itineraries: response.id});
+    })
     .then(() => {
-      Destination.create(newDestination)
-        .then(response => {
-          let newItinerary = {
-            partners,
-            ambassador,
-            dateStart,
-            dateEnd,
-            destination: response.id
-          };
-          return Itinerary.create(newItinerary);
-        })
-        .then(response => {
-          itinerary = response;
-          return User.findByIdAndUpdate(req.user.id, { itineraries: response.id });
-        })
-        .then(() => {
-          res.status(201).json(itinerary);
-        })
-        .catch(err => {
-          next(err);
-        });
+      res
+        .status(201)
+        .json(itinerary);
+    })
+    .catch(err => {
+      next(err);
     });
 });
 
 router.put('/itinerary/:id/cards', (req, res, next) => {
   let card = req.body.card;
 
-  Itinerary.findById(req.params.id)
+  Itinerary
+    .findById(req.params.id)
     .then(response => {
       let newCards = response.cards;
       newCards.push(card);
-      return Itinerary.findByIdAndUpdate(
-        req.params.id,
-        {
-          cards: newCards
-        },
-        { new: true }
-      );
+      return Itinerary.findByIdAndUpdate(req.params.id, {
+        cards: newCards
+      }, {new: true});
     })
     .then(response => {
-      res.status(201).json(response);
+      res
+        .status(201)
+        .json(response);
     })
     .catch(err => {
       next(err);
