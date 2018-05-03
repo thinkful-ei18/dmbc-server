@@ -244,8 +244,10 @@ describe('Before and After Hooks', function() {
     it('should post a new card with proper attributes', function() {
       let newDestination = {
         label: 'Mexico City',
-        latitude: 19.2464696,
-        longitude: -99.10134979999998
+        location: {
+          lat: 19.2464696,
+          lng: -99.10134979999998
+        }
       };
 
       let newItinerary = {
