@@ -4,7 +4,7 @@ const express = require('express');
 const router = express.Router();
 const { User } = require('../models/user');
 const { Itinerary } = require('../models/itinerary');
-// const { Block } = require('../models/block');
+const { Destination } = require('../models/destination');
 const passport = require('passport');
 
 /**
@@ -19,15 +19,22 @@ router.get('/itinerary', (req, res, next) => {
     .populate({
       path: 'itineraries',
       model: 'Itinerary',
-      populate: {
-        path: 'blocks',
-        model: 'Block'
-        // populate: {
-        //   path: 'cards',
-        //   model: 'Card'
-        // }
-      }
+      populate: [
+        {
+          path: 'blocks',
+          model: 'Block'
+          // populate: {
+          //   path: 'cards',
+          //   model: 'Card'
+          // }
+        },
+        {
+          path: 'destination',
+          model: 'Destination'
+        }
+      ]
     })
+    .populate('destination')
     .then(response => {
       res.json(response.itineraries);
     })
@@ -65,15 +72,40 @@ router.get('/itineraries/:id', (req, res, next) => {
 });
 
 router.post('/itinerary', (req, res, next) => {
-  let { partners, ambassador, dateStart, dateEnd, destination } = req.body;
-  let newItinerary = { partners, ambassador, dateStart, dateEnd, destination };
+  let {
+    partners,
+    ambassador,
+    dateStart,
+    dateEnd,
+    destination,
+    distance,
+    tags
+  } = req.body;
 
-  if (!newItinerary.partners) {
+  let newDestination = {
+    latitude: destination.latitude,
+    longitude: destination.longitude,
+    locationName: destination.label,
+    tags,
+    distance
+  };
+
+  if (!req.body.partners) {
     let err = new Error('Must include Partners');
     err.status = 400;
     return next(err);
   }
-  Itinerary.create(newItinerary)
+  Destination.create(newDestination)
+    .then(response => {
+      let newItinerary = {
+        partners,
+        ambassador,
+        dateStart,
+        dateEnd,
+        destination: response.id
+      };
+      return Itinerary.create(newItinerary);
+    })
     .then(response => {
       res.status(201).json(response);
     })
