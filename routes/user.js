@@ -4,6 +4,23 @@ const express = require('express');
 const router = express.Router();
 const { User } = require('../models/user');
 
+router.get('/user', (req, res, next) => {
+  let ambassador;
+  User.find({ambassador: 'true'})
+    .then(results => {
+      let number = Math.floor(Math.random() * Math.floor(results.length));
+      ambassador = results[number].id;
+      res.json(results[number]);
+    })
+    .then(() => {
+      console.log(ambassador);
+    })
+    .catch(err => {
+      next(err);
+    });
+});
+
+
 router.get('/users', (req, res, next) => {
   User.find()
     .then(results => {
@@ -81,11 +98,11 @@ router.post('/users', (req, res, next) => {
     const err = errorGenerator(
       tooShort
         ? `${tooShort} must be ${
-            lengthValidation[tooShort].min
-          } characters or longer`
+          lengthValidation[tooShort].min
+        } characters or longer`
         : `${tooLong} must be ${
-            lengthValidation[tooLong].max
-          } characters or smaller`
+          lengthValidation[tooLong].max
+        } characters or smaller`
     );
     return next(err);
   }

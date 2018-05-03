@@ -65,20 +65,28 @@ router.get('/itineraries/:id', (req, res, next) => {
 });
 
 router.post('/itinerary', (req, res, next) => {
-  let { partners, ambassador, dateStart, dateEnd, destination } = req.body;
-  let newItinerary = { partners, ambassador, dateStart, dateEnd, destination };
+  let { partners, dateStart, dateEnd, destination } = req.body;
 
-  if (!newItinerary.partners) {
+  if (!partners) {
     let err = new Error('Must include Partners');
     err.status = 400;
     return next(err);
   }
-  Itinerary.create(newItinerary)
-    .then(response => {
-      res.status(201).json(response);
+
+  User.find({ambassador: 'true'})
+    .then(results => {
+      let number = Math.floor(Math.random() * Math.floor(results.length));
+      return results[number].id;
     })
-    .catch(err => {
-      next(err);
+    .then(ambassador => {
+      let newItinerary = { partners, ambassador, dateStart, dateEnd, destination };
+      Itinerary.create(newItinerary)
+        .then(response => {
+          res.status(201).json(response);
+        })
+        .catch(err => {
+          next(err);
+        });
     });
 });
 
