@@ -118,7 +118,7 @@ describe('Before and After Hooks', function() {
   });
 
   describe('GET /itinerary', function() {
-    it.only('should get a users populated itinerary', function() {
+    it('should get a users populated itinerary', function() {
       return chai
         .request(app)
         .get('/api/itinerary')
@@ -240,7 +240,7 @@ describe('Before and After Hooks', function() {
   });
 
   describe('POST /itinerary', function() {
-    it.only('should post a new card with proper attributes', function() {
+    it('should post a new card with proper attributes', function() {
       let newDestination = {
         label: 'Mexico City',
         latitude: 19.2464696,
