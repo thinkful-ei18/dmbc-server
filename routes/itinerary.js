@@ -74,7 +74,6 @@ router.get('/itineraries/:id', (req, res, next) => {
 router.post('/itinerary', (req, res, next) => {
   let {
     partners,
-    ambassador,
     dateStart,
     dateEnd,
     destination,
@@ -82,9 +81,11 @@ router.post('/itinerary', (req, res, next) => {
     tags
   } = req.body;
 
+  let ambassador;
+
   let newDestination = {
-    latitude: destination.latitude,
-    longitude: destination.longitude,
+    latitude: destination.location.lat,
+    longitude: destination.location.lng,
     locationName: destination.label,
     tags,
     distance
@@ -97,27 +98,34 @@ router.post('/itinerary', (req, res, next) => {
     err.status = 400;
     return next(err);
   }
-  
-  Destination.create(newDestination)
-    .then(response => {
-      let newItinerary = {
-        partners,
-        ambassador,
-        dateStart,
-        dateEnd,
-        destination: response.id
-      };
-      return Itinerary.create(newItinerary);
-    })
-    .then(response => {
-      itinerary = response;
-      return User.findByIdAndUpdate(req.user.id, { itineraries: response.id });
+
+  User.find({ambassador: 'true'})
+    .then(results => {
+      let number = Math.floor(Math.random() * Math.floor(results.length));
+      ambassador = results[number].id;
     })
     .then(() => {
-      res.status(201).json(itinerary);
-    })
-    .catch(err => {
-      next(err);
+      Destination.create(newDestination)
+        .then(response => {
+          let newItinerary = {
+            partners,
+            ambassador,
+            dateStart,
+            dateEnd,
+            destination: response.id
+          };
+          return Itinerary.create(newItinerary);
+        })
+        .then(response => {
+          itinerary = response;
+          return User.findByIdAndUpdate(req.user.id, { itineraries: response.id });
+        })
+        .then(() => {
+          res.status(201).json(itinerary);
+        })
+        .catch(err => {
+          next(err);
+        });
     });
 });
 

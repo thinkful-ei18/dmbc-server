@@ -81,11 +81,11 @@ router.post('/users', (req, res, next) => {
     const err = errorGenerator(
       tooShort
         ? `${tooShort} must be ${
-            lengthValidation[tooShort].min
-          } characters or longer`
+          lengthValidation[tooShort].min
+        } characters or longer`
         : `${tooLong} must be ${
-            lengthValidation[tooLong].max
-          } characters or smaller`
+          lengthValidation[tooLong].max
+        } characters or smaller`
     );
     return next(err);
   }
