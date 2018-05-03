@@ -21,7 +21,7 @@ const seedBlocks = require('../db/seed/blocks');
 
 const sinon = require('sinon');
 const sandbox = sinon.createSandbox();
-describe('Before and After Hooks', function() {
+describe('Block Test', function() {
   let token;
   before(function() {
     return mongoose.connect(TEST_DATABASE_URL, { autoIndex: false });
@@ -78,40 +78,40 @@ describe('Before and After Hooks', function() {
           expect(res).to.have.status(401);
         });
     });
-  });
 
-  it('Should reject requests with an invalid token', function() {
-    return User.findById('322222222222222222222200')
-      .then(response => {
-        return jwt.sign(
-          {
-            user: {
-              email: response.email,
-              id: response.id
+    it('Should reject requests with an invalid token', function() {
+      return User.findById('322222222222222222222200')
+        .then(response => {
+          return jwt.sign(
+            {
+              user: {
+                email: response.email,
+                id: response.id
+              }
+            },
+            'wrong',
+            {
+              algorithm: 'HS256',
+              subject: response.email,
+              expiresIn: '7d'
             }
-          },
-          'wrong',
-          {
-            algorithm: 'HS256',
-            subject: response.email,
-            expiresIn: '7d'
+          );
+        })
+        .then(token => {
+          return chai
+            .request(app)
+            .get('/api/itinerary')
+            .set('Authorization', `Bearer ${token}`);
+        })
+        .then(() => expect.fail(null, null, 'Request should not succeed'))
+        .catch(err => {
+          if (err instanceof chai.AssertionError) {
+            throw err;
           }
-        );
-      })
-      .then(token => {
-        return chai
-          .request(app)
-          .get('/api/itinerary')
-          .set('Authorization', `Bearer ${token}`);
-      })
-      .then(() => expect.fail(null, null, 'Request should not succeed'))
-      .catch(err => {
-        if (err instanceof chai.AssertionError) {
-          throw err;
-        }
-        const res = err.response;
-        expect(res).to.have.status(401);
-      });
+          const res = err.response;
+          expect(res).to.have.status(401);
+        });
+    });
   });
 
   describe('GET /blocks', function() {
@@ -254,43 +254,43 @@ describe('Before and After Hooks', function() {
           expect(response.cards.length).to.equal(2);
         });
     });
-  });
 
-  it('should catch errors and respond properly', function() {
-    const spy = chai.spy();
-    let newBlock = { card: '522222222222222222222200' };
-    sandbox.stub(express.response, 'json').throws('TypeError');
-    return chai
-      .request(app)
-      .put('/api/block/822222222222222222222200/cards')
-      .set('authorization', `Bearer ${token}`)
-      .send(newBlock)
-      .then(spy)
-      .catch(err => {
-        expect(err).to.have.status(500);
-      })
-      .then(() => {
-        expect(spy).to.not.have.been.called();
-      });
-  });
-
-  describe('PUT /block/:id/select', function() {
-    it('should update a block with card information', function() {
-      let update = { selection: '522222222222222222222200' };
-
+    it('should catch errors and respond properly', function() {
+      const spy = chai.spy();
+      let newBlock = { card: '522222222222222222222200' };
+      sandbox.stub(express.response, 'json').throws('TypeError');
       return chai
         .request(app)
-        .put('/api/block/822222222222222222222200/select')
+        .put('/api/block/822222222222222222222200/cards')
         .set('authorization', `Bearer ${token}`)
-        .send(update)
-        .then(response => {
-          expect(response).to.have.status(201);
-          expect(response.body).to.be.an('object');
-          return Block.findById('822222222222222222222200');
+        .send(newBlock)
+        .then(spy)
+        .catch(err => {
+          expect(err).to.have.status(500);
         })
-        .then(response => {
-          expect(response.selectedCard).to.not.equal(null);
+        .then(() => {
+          expect(spy).to.not.have.been.called();
         });
+    });
+
+    describe('PUT /block/:id/select', function() {
+      it('should update a block with card information', function() {
+        let update = { selection: '522222222222222222222200' };
+
+        return chai
+          .request(app)
+          .put('/api/block/822222222222222222222200/select')
+          .set('authorization', `Bearer ${token}`)
+          .send(update)
+          .then(response => {
+            expect(response).to.have.status(201);
+            expect(response.body).to.be.an('object');
+            return Block.findById('822222222222222222222200');
+          })
+          .then(response => {
+            expect(response.selectedCard).to.not.equal(null);
+          });
+      });
     });
   });
 });

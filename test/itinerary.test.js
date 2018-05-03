@@ -23,7 +23,7 @@ const seedDestinations = require('../db/seed/destinations');
 
 const sinon = require('sinon');
 const sandbox = sinon.createSandbox();
-describe('Before and After Hooks', function() {
+describe('Itinerary Test', function() {
   let token;
   before(function() {
     return mongoose.connect(TEST_DATABASE_URL, { autoIndex: false });
@@ -82,40 +82,40 @@ describe('Before and After Hooks', function() {
           expect(res).to.have.status(401);
         });
     });
-  });
 
-  it('Should reject requests with an invalid token', function() {
-    return User.findById('322222222222222222222200')
-      .then(response => {
-        return jwt.sign(
-          {
-            user: {
-              email: response.email,
-              id: response.id
+    it('Should reject requests with an invalid token', function() {
+      return User.findById('322222222222222222222200')
+        .then(response => {
+          return jwt.sign(
+            {
+              user: {
+                email: response.email,
+                id: response.id
+              }
+            },
+            'wrong',
+            {
+              algorithm: 'HS256',
+              subject: response.email,
+              expiresIn: '7d'
             }
-          },
-          'wrong',
-          {
-            algorithm: 'HS256',
-            subject: response.email,
-            expiresIn: '7d'
+          );
+        })
+        .then(token => {
+          return chai
+            .request(app)
+            .get('/api/itinerary')
+            .set('Authorization', `Bearer ${token}`);
+        })
+        .then(() => expect.fail(null, null, 'Request should not succeed'))
+        .catch(err => {
+          if (err instanceof chai.AssertionError) {
+            throw err;
           }
-        );
-      })
-      .then(token => {
-        return chai
-          .request(app)
-          .get('/api/itinerary')
-          .set('Authorization', `Bearer ${token}`);
-      })
-      .then(() => expect.fail(null, null, 'Request should not succeed'))
-      .catch(err => {
-        if (err instanceof chai.AssertionError) {
-          throw err;
-        }
-        const res = err.response;
-        expect(res).to.have.status(401);
-      });
+          const res = err.response;
+          expect(res).to.have.status(401);
+        });
+    });
   });
 
   describe('GET /itinerary', function() {
@@ -359,23 +359,23 @@ describe('Before and After Hooks', function() {
           expect(response.cards.length).to.equal(1);
         });
     });
-  });
 
-  it('should catch errors and respond properly', function() {
-    const spy = chai.spy();
-    let newItinerary = { card: '522222222222222222222200' };
-    sandbox.stub(express.response, 'json').throws('TypeError');
-    return chai
-      .request(app)
-      .put('/api/itinerary/422222222222222222222200/cards')
-      .set('authorization', `Bearer ${token}`)
-      .send(newItinerary)
-      .then(spy)
-      .catch(err => {
-        expect(err).to.have.status(500);
-      })
-      .then(() => {
-        expect(spy).to.not.have.been.called();
-      });
+    it('should catch errors and respond properly', function() {
+      const spy = chai.spy();
+      let newItinerary = { card: '522222222222222222222200' };
+      sandbox.stub(express.response, 'json').throws('TypeError');
+      return chai
+        .request(app)
+        .put('/api/itinerary/422222222222222222222200/cards')
+        .set('authorization', `Bearer ${token}`)
+        .send(newItinerary)
+        .then(spy)
+        .catch(err => {
+          expect(err).to.have.status(500);
+        })
+        .then(() => {
+          expect(spy).to.not.have.been.called();
+        });
+    });
   });
 });
