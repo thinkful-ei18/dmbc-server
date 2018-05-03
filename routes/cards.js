@@ -151,7 +151,15 @@ router.put('/cards/:id', (req, res, next) => {
     return next(err);
   }
 
-  const updateItem = { name, description, address, hours, ambassador, rating, tips };
+  const updateItem = { 
+    name, 
+    description, 
+    address, 
+    hours, 
+    ambassador, 
+    rating, 
+    tips
+  };
 
   const options = { new: true };
 
