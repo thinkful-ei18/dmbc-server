@@ -97,6 +97,7 @@ router.post('/itinerary', (req, res, next) => {
     err.status = 400;
     return next(err);
   }
+  
   Destination.create(newDestination)
     .then(response => {
       let newItinerary = {
