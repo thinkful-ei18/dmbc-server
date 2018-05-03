@@ -163,6 +163,20 @@ describe('Card Test', function() {
         });
     });
 
+    it('should return a list of cards with searchterm', function() {
+      let response;
+      return chai
+        .request(app)
+        .get('/api/cards?searchTerm=test')
+        .set('authorization', `Bearer ${token}`)
+        .then(_response => {
+          response = _response;
+          expect(response).to.have.status(200);
+          expect(response.body).to.be.an('array');
+          expect(response.body.length).to.eql(2);
+        });
+    });
+
     it('should return the correct values', function() {
       let item;
       return chai
@@ -357,6 +371,198 @@ describe('Card Test', function() {
         .then(spy)
         .catch(err => {
           expect(err).to.have.status(500);
+        })
+        .then(() => {
+          expect(spy).to.not.have.been.called();
+        });
+    });
+  });
+
+  describe('PUT cards/:id', function() {
+    it('should update a card with proper validation', function() {
+      let updateCard = {
+        'ambassador': [
+          '322222222222222222222200'
+        ],
+        'name': 'Foo Bar',
+        'description': 'Bar of Foos',
+        'address': '1152 Foobar Street, BarFoo, FB',
+        'hours': '12pm - 8pm',
+        'rating': [4],
+        'id': '5ae8ad6ea9ea1724941f76ec',
+        'tips': 'Something changed'
+      };
+
+      return chai
+        .request(app)
+        .put('/api/cards/5ae8ad6ea9ea1724941f76ec')
+        .set('authorization', `Bearer ${token}`)
+        .send(updateCard)
+        .then(response => {
+          expect(response).to.have.status(200);
+          expect(response.body).to.be.an('object');
+          expect(response.body.name).to.equal(updateCard.name);
+          expect(response.body.id).to.equal(updateCard.id);
+          return Card.findById(response.body.id);
+        })
+        .then(card => {
+          expect(card.name).to.equal(updateCard.name);
+          expect(card.id).to.equal(updateCard.id);
+        });
+    });
+
+    it('should update a card\'s rating with proper validation', function() {
+      let updateCard = {
+        rating: 3
+      };
+
+      return chai
+        .request(app)
+        .put('/api/cards/5ae8ad6ea9ea1724941f76ec/rate')
+        .set('authorization', `Bearer ${token}`)
+        .send(updateCard)
+        .then(response => {
+          expect(response).to.have.status(200);
+          expect(response.body).to.be.an('object');
+          expect(response.body.rating.length).to.equal(2);
+        });
+    });
+
+    it('should update a card\'s tips with proper validation', function() {
+      let updateCard = {
+        tips: 'something'
+      };
+
+      return chai
+        .request(app)
+        .put('/api/cards/5ae8ad6ea9ea1724941f76ec/tips')
+        .set('authorization', `Bearer ${token}`)
+        .send(updateCard)
+        .then(response => {
+          expect(response).to.have.status(200);
+          expect(response.body).to.be.an('object');
+          expect(response.body.tips.length).to.equal(1);
+        });
+    });
+
+    it('should not update card if body and param id do not match', function() {
+      let updateCard = { name: 'Foo Bar', id: '5ae8ad6ea9ea1724941f76eb' };
+
+      const spy = chai.spy();
+
+      return chai
+        .request(app)
+        .put('/api/cards/5ae8ad6ea9ea1724941f76ec')
+        .set('authorization', `Bearer ${token}`)
+        .send(updateCard)
+        .then(spy)
+        .catch(err => {
+          let res = err.response;
+          expect(res).to.have.status(400);
+          expect(res.body.message).to.equal(
+            'Id\'s do not match'
+          );
+        })
+        .then(() => {
+          expect(spy).to.not.have.been.called();
+        });
+    });
+
+    it('should return 400 on invalid id', function() {
+      let updateCard = { name: 'Foo Bar' };
+
+      const spy = chai.spy();
+
+      return chai
+        .request(app)
+        .put('/api/cards/00000000000000000000000')
+        .set('authorization', `Bearer ${token}`)
+        .send(updateCard)
+        .then(spy)
+        .catch(err => {
+          let res = err.response;
+          expect(res).to.have.status(400);
+          expect(res.body.message).to.equal(
+            'The `id` is not valid'
+          );
+        })
+        .then(() => {
+          expect(spy).to.not.have.been.called();
+        });
+    });
+
+    it('should return 404 with invalid id', function() {
+      let updateCard = { name: 'Foo Bar', id: '000000000000000000000009' };
+      const spy = chai.spy();
+
+      return chai
+        .request(app)
+        .put('/api/cards/000000000000000000000009')
+        .set('authorization', `Bearer ${token}`)
+        .send(updateCard)
+        .then(spy)
+        .catch(err => {
+          let res = err.response;
+          expect(res).to.have.status(404);
+          expect(res.body.message).to.equal('Not Found');
+        })
+        .then(() => {
+          expect(spy).to.not.have.been.called();
+        });
+    });
+
+    it('should return 400 if rating is empty', function() {
+      let updateCard = {};
+      const spy = chai.spy();
+
+      return chai
+        .request(app)
+        .put('/api/cards/5ae8ad6ea9ea1724941f76ec/rate')
+        .set('authorization', `Bearer ${token}`)
+        .send(updateCard)
+        .then(spy)
+        .catch(err => {
+          let res = err.response;
+          expect(res).to.have.status(400);
+          expect(res.body.message).to.equal('Rating is empty');
+        })
+        .then(() => {
+          expect(spy).to.not.have.been.called();
+        });
+    });
+
+    it('should return 400 if rating is empty', function() {
+      let updateCard = {};
+      const spy = chai.spy();
+
+      return chai
+        .request(app)
+        .put('/api/cards/5ae8ad6ea9ea1724941f76ec/tips')
+        .set('authorization', `Bearer ${token}`)
+        .send(updateCard)
+        .then(spy)
+        .catch(err => {
+          let res = err.response;
+          expect(res).to.have.status(400);
+          expect(res.body.message).to.equal('Tips is empty');
+        })
+        .then(() => {
+          expect(spy).to.not.have.been.called();
+        });
+    });
+
+    it('should catch errors and respond properly', function() {
+      const spy = chai.spy();
+      let updateCard = { title: 'Foo Bar', id: '000000000000000000000000' };
+      sandbox.stub(express.response, 'json').throws('TypeError');
+      return chai
+        .request(app)
+        .put('/api/cards/000000000000000000000000')
+        .set('authorization', `Bearer ${token}`)
+        .send(updateCard)
+        .then(spy)
+        .catch(err => {
+          expect(err).to.have.status(400);
         })
         .then(() => {
           expect(spy).to.not.have.been.called();
