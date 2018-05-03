@@ -240,7 +240,7 @@ describe('Before and After Hooks', function() {
   });
 
   describe('POST /itinerary', function() {
-    it('should post a new card with proper attributes', function() {
+    it.only('should post a new card with proper attributes', function() {
       let newDestination = {
         label: 'Mexico City',
         latitude: 19.2464696,
@@ -272,6 +272,10 @@ describe('Before and After Hooks', function() {
         })
         .then(response => {
           expect(response).to.equal(2);
+          return User.findById('322222222222222222222200');
+        })
+        .then(response => {
+          expect(response.itineraries).to.not.equal(null);
         });
     });
 
