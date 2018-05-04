@@ -17,15 +17,15 @@ const seedUsers = require('../db/seed/users');
 
 const sinon = require('sinon');
 const sandbox = sinon.createSandbox();
-describe('Before and After Hooks', function() {
+describe('User Test', function() {
   let token;
   before(function() {
     return mongoose.connect(TEST_DATABASE_URL, { autoIndex: false });
   });
 
   beforeEach(function() {
-    mongoose.connection.db.dropDatabase();
-    return User.insertMany(seedUsers)
+    return mongoose.connection.db.dropDatabase()
+      .then(() => User.insertMany(seedUsers))
       .then(() => User.ensureIndexes())
       .then(() => User.findById('322222222222222222222200'))
       .then(response => {

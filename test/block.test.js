@@ -28,8 +28,8 @@ describe('Block Test', function() {
   });
 
   beforeEach(function() {
-    mongoose.connection.db.dropDatabase();
-    return User.insertMany(seedUsers)
+    return mongoose.connection.db.dropDatabase()
+      .then(() => User.insertMany(seedUsers))
       .then(() => User.ensureIndexes())
       .then(() => Itinerary.insertMany(seedItineraries))
       .then(() => Itinerary.ensureIndexes())
