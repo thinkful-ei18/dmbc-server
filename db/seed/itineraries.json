@@ -1,9 +1,14 @@
 [
   {
-    "partners": "2 kids",
+    "cards": [],
+    "blocks": [
+        "5aeb6ec8877f2615d09aee71"
+    ],
+    "partners": "me, myself, and I",
     "ambassador": "322222222222222222222200",
-    "_id": "422222222222222222222200",
-    "blocks": ["822222222222222222222200"],
-    "destination": "122222222222222222222200"
+    "dateStart": "2018-05-21T04:00:00.000Z",
+    "dateEnd": "2018-05-22T04:00:00.000Z",
+    "destination": "5aeb6eb2877f2615d09aee6f",
+    "id": "5aeb6eb2877f2615d09aee70"
   }
 ]

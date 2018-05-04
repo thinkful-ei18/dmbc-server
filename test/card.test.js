@@ -252,6 +252,70 @@ describe('Card Test', function() {
         });
     });
 
+    it('should send a 404 error on a bad id', function() {
+      let badId = '000000000000000000000009';
+      const spy = chai.spy();
+      return chai
+        .request(app)
+        .get(`/api/cards/${badId}`)
+        .set('authorization', `Bearer ${token}`)
+        .then(spy)
+        .catch(err => {
+          const res = err.response;
+          expect(res).to.have.status(404);
+          expect(res.body.message).to.equal('Not Found');
+        })
+        .then(() => {
+          expect(spy).to.not.have.been.called();
+        });
+    });
+
+    it('should catch errors and respond properly', function() {
+      const spy = chai.spy();
+      sandbox.stub(express.response, 'json').throws('TypeError');
+      return chai
+        .request(app)
+        .get('/api/cards/000000000000000000000001')
+        .set('authorization', `Bearer ${token}`)
+        .then(spy)
+        .catch(err => {
+          expect(err).to.have.status(404);
+        })
+        .then(() => {
+          expect(spy).to.not.have.been.called();
+        });
+    });
+  });
+
+  describe('GET cards/:ambassador', function() {
+    it('should return cards belonging to ambassador', function() {
+      return chai
+        .request(app)
+        .get('/api/cards/322222222222222222222200')
+        .set('authorization', `Bearer ${token}`)
+        .then(response => {
+          expect(response.body.length).to.equal(4);
+        })
+    });
+
+    it('should send an error on a invalid id format', function() {
+      let badId = '00000000000000000000000';
+      const spy = chai.spy();
+      return chai
+        .request(app)
+        .get(`/api/cards/${badId}`)
+        .set('authorization', `Bearer ${token}`)
+        .then(spy)
+        .catch(err => {
+          const res = err.response;
+          expect(res).to.have.status(400);
+          expect(res.body.message).to.equal('The `id` is not valid');
+        })
+        .then(() => {
+          expect(spy).to.not.have.been.called();
+        });
+    });
+
     it('should send an 404 error on a bad id', function() {
       let badId = '000000000000000000000009';
       const spy = chai.spy();

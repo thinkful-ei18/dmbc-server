@@ -64,13 +64,39 @@ router.get('/cards/:id', (req, res, next) => {
 
   Card.findOne({_id: id})
     .then(result => {
+      console.log(result);
       if (result) {
         res.json(result);
       } else {
         next();
       }
     })
-    .catch(next);
+    .catch(err => {
+      next(err);
+    });
+});
+
+/* ========== GET/READ CARDs BELONGING TO A USER ========== */
+router.get('/cards/:ambassador', (req, res, next) => {
+  const {ambassador} = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(ambassador)) {
+    const err = new Error('The `id` is not valid');
+    err.status = 400;
+    return next(err);
+  }
+
+  Card.find({ambassador})
+    .then(result => {
+      if (result.length > 0) {
+        res.json(result);
+      } else {
+        next();
+      }
+    })
+    .catch(err => {
+      next(err);
+    });
 });
 
 /* ========== POST/CREATE AN ITEM ========== */
