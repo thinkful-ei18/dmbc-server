@@ -24,8 +24,8 @@ describe('Auth Test', function() {
   });
 
   beforeEach(function() {
-    mongoose.connection.db.dropDatabase();
-    return User.insertMany(seedUsers)
+    return mongoose.connection.db.dropDatabase()
+      .then(() => User.insertMany(seedUsers))
       .then(() => User.ensureIndexes())
       .then(() => User.findById('322222222222222222222200'))
       .then(response => {

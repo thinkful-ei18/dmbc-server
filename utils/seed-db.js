@@ -1,4 +1,5 @@
 'use strict';
+require('dotenv').config();
 const mongoose = require('mongoose');
 const { User } = require('../models/user');
 const { Itinerary } = require('../models/itinerary');
