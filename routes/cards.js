@@ -114,8 +114,8 @@ router.post('/cards', (req, res, next) => {
   });
 
   if (!hasFields) {
-    return res.status(400).json({
-      code: 400,
+    return res.status(422).json({
+      code: 422,
       reason: 'ValidationError',
       message: 'Missing field',
       location: 'hasFields'
