@@ -10,7 +10,7 @@ const seedItineraries = require('../db/seed/itineraries');
 const seedUsers = require('../db/seed/users');
 const seedBlocks = require('../db/seed/blocks');
 const seedCards = require('../db/seed/cards');
-const seedDestinations = require('../db/seed/destination');
+const seedDestinations = require('../db/seed/destinations');
 const { DATABASE_URL } = require('../config');
 
 mongoose
