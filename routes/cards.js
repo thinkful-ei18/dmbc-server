@@ -64,7 +64,6 @@ router.get('/cards/:id', (req, res, next) => {
 
   Card.findOne({_id: id})
     .then(result => {
-      console.log(result);
       if (result) {
         res.json(result);
       } else {
@@ -101,9 +100,10 @@ router.get('/cards/:ambassador', (req, res, next) => {
 
 /* ========== POST/CREATE AN ITEM ========== */
 router.post('/cards', (req, res, next) => {
-  const { name, description, address, hours, ambassador, rating, tips } = req.body;
+  const ambassador = req.user.id;
+  const { name, description, address, hours, latitude, longitude } = req.body;
 
-  const requiredFields = ['name', 'description', 'address', 'hours', 'ambassador', 'rating'];
+  const requiredFields = ['name', 'description', 'address', 'hours'];
   const hasFields = requiredFields.every(field => {
     return req.body[field];
   });
@@ -114,8 +114,8 @@ router.post('/cards', (req, res, next) => {
   });
 
   if (!hasFields) {
-    return res.status(422).json({
-      code: 422,
+    return res.status(400).json({
+      code: 400,
       reason: 'ValidationError',
       message: 'Missing field',
       location: 'hasFields'
@@ -149,9 +149,9 @@ router.post('/cards', (req, res, next) => {
     description, 
     address, 
     hours, 
-    ambassador, 
-    rating,
-    tips
+    ambassador,
+    latitude, 
+    longitude
   };
 
   validateAmbassador(ambassador)

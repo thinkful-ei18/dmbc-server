@@ -11,7 +11,8 @@ const cardSchema = mongoose.Schema({
   ambassador: { type: mongoose.Schema.Types.ObjectId, ref: 'User'},
   rating: [{type: Number, default: 0}],
   tips: [{type: String, index: true}],
-  tags: [{type: String, index: true}]
+  tags: [{type: String, index: true}],
+  image: {type: String, default: 'something'}
 });
 
 cardSchema.index({name: 'text', description: 'text', tips: 'text'}, { weights: { name: 10, tags: 7,  description: 5, tips: 1 } });
