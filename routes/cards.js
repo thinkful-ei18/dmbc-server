@@ -70,14 +70,40 @@ router.get('/cards/:id', (req, res, next) => {
         next();
       }
     })
-    .catch(next);
+    .catch(err => {
+      next(err);
+    });
+});
+
+/* ========== GET/READ CARDs BELONGING TO A USER ========== */
+router.get('/cards/:ambassador', (req, res, next) => {
+  const {ambassador} = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(ambassador)) {
+    const err = new Error('The `id` is not valid');
+    err.status = 400;
+    return next(err);
+  }
+
+  Card.find({ambassador})
+    .then(result => {
+      if (result.length > 0) {
+        res.json(result);
+      } else {
+        next();
+      }
+    })
+    .catch(err => {
+      next(err);
+    });
 });
 
 /* ========== POST/CREATE AN ITEM ========== */
 router.post('/cards', (req, res, next) => {
-  const { name, description, address, hours, ambassador, rating, tips } = req.body;
+  const ambassador = req.user.id;
+  const { name, description, address, hours, latitude, longitude, image } = req.body;
 
-  const requiredFields = ['name', 'description', 'address', 'hours', 'ambassador', 'rating'];
+  const requiredFields = ['name', 'description', 'address', 'hours'];
   const hasFields = requiredFields.every(field => {
     return req.body[field];
   });
@@ -123,9 +149,10 @@ router.post('/cards', (req, res, next) => {
     description, 
     address, 
     hours, 
-    ambassador, 
-    rating,
-    tips
+    ambassador,
+    latitude, 
+    longitude,
+    image
   };
 
   validateAmbassador(ambassador)
@@ -149,7 +176,7 @@ router.post('/cards', (req, res, next) => {
 /* ========== PUT/UPDATE A SINGLE ITEM ========== */
 router.put('/cards/:id', (req, res, next) => {
   const { id } = req.params;
-  const { name, description, address, hours, ambassador, rating, tips } = req.body;
+  const { name, description, address, hours, ambassador, rating, tips, image } = req.body;
 
   /***** Never trust users - validate input *****/
   if (!name) {
@@ -177,7 +204,8 @@ router.put('/cards/:id', (req, res, next) => {
     hours, 
     ambassador, 
     rating, 
-    tips
+    tips,
+    image
   };
 
   const options = { new: true };
