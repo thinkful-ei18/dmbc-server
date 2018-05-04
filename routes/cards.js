@@ -101,7 +101,7 @@ router.get('/cards/:ambassador', (req, res, next) => {
 /* ========== POST/CREATE AN ITEM ========== */
 router.post('/cards', (req, res, next) => {
   const ambassador = req.user.id;
-  const { name, description, address, hours, latitude, longitude } = req.body;
+  const { name, description, address, hours, latitude, longitude, image } = req.body;
 
   const requiredFields = ['name', 'description', 'address', 'hours'];
   const hasFields = requiredFields.every(field => {
@@ -151,7 +151,8 @@ router.post('/cards', (req, res, next) => {
     hours, 
     ambassador,
     latitude, 
-    longitude
+    longitude,
+    image
   };
 
   validateAmbassador(ambassador)
@@ -175,7 +176,7 @@ router.post('/cards', (req, res, next) => {
 /* ========== PUT/UPDATE A SINGLE ITEM ========== */
 router.put('/cards/:id', (req, res, next) => {
   const { id } = req.params;
-  const { name, description, address, hours, ambassador, rating, tips } = req.body;
+  const { name, description, address, hours, ambassador, rating, tips, image } = req.body;
 
   /***** Never trust users - validate input *****/
   if (!name) {
@@ -203,7 +204,8 @@ router.put('/cards/:id', (req, res, next) => {
     hours, 
     ambassador, 
     rating, 
-    tips
+    tips,
+    image
   };
 
   const options = { new: true };
