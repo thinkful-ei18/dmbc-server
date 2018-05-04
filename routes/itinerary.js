@@ -24,8 +24,11 @@ router.get('/itinerary', (req, res, next) => {
       populate: [
         {
           path: 'blocks',
-          model: 'Block'
-          // populate: {   path: 'cards',   model: 'Card' }
+          model: 'Block',
+          populate: {
+            path: 'cards',
+            model: 'Card'
+          }
         }, {
           path: 'destination',
           model: 'Destination'
@@ -56,8 +59,12 @@ router.get('/itineraries/:id', (req, res, next) => {
   Itinerary
     .find({_id: req.params.id, ambassador: req.user.id})
     .populate({
-      path: 'blocks', model: 'Block'
-      // populate: {   path: 'cards',   model: 'Card' }
+      path: 'blocks',
+      model: 'Block',
+      populate: {
+        path: 'cards',
+        model: 'Card'
+      }
     })
     .then(response => {
       res.json(response);
@@ -120,28 +127,6 @@ router.post('/itinerary', (req, res, next) => {
       res
         .status(201)
         .json(itinerary);
-    })
-    .catch(err => {
-      next(err);
-    });
-});
-
-router.put('/itinerary/:id/cards', (req, res, next) => {
-  let card = req.body.card;
-
-  Itinerary
-    .findById(req.params.id)
-    .then(response => {
-      let newCards = response.cards;
-      newCards.push(card);
-      return Itinerary.findByIdAndUpdate(req.params.id, {
-        cards: newCards
-      }, {new: true});
-    })
-    .then(response => {
-      res
-        .status(201)
-        .json(response);
     })
     .catch(err => {
       next(err);
