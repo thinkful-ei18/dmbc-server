@@ -47,6 +47,7 @@ router.get('/itinerary', (req, res, next) => {
 router.get('/itineraries', (req, res, next) => {
   Itinerary
     .find({ambassador: req.user.id})
+    .populate('destination')
     .then(response => {
       res.json(response);
     })

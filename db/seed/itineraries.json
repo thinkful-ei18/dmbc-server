@@ -1,14 +1,12 @@
 [
   {
     "cards": [],
-    "blocks": [
-        "5aeb6ec8877f2615d09aee71"
-    ],
     "partners": "me, myself, and I",
     "ambassador": "322222222222222222222200",
-    "dateStart": "2018-05-21T04:00:00.000Z",
-    "dateEnd": "2018-05-22T04:00:00.000Z",
-    "destination": "5aeb6eb2877f2615d09aee6f",
-    "id": "5aeb6eb2877f2615d09aee70"
+    "_id": "422222222222222222222200",
+    "blocks": ["822222222222222222222200"],
+    "destination": "122222222222222222222200",
+    "dateEnd": "Sun May 06 2018 00:00:00 GMT-0700 (PDT)",
+    "dateStart": "Thu May 03 2018 00:00:00 GMT-0700 (PDT)"
   }
 ]
