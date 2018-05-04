@@ -29,6 +29,10 @@ function validateAmbassador(userId) {
 /* ========== GET/READ ALL ITEM ========== */
 router.get('/cards', (req, res, next) => {
   const searchTerm = req.query.searchTerm;
+  const escapedSearch = searchTerm.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+  console.log('1');
+  const searchRegex = new RegExp('.*' + escapedSearch + '.*');
+  console.log(2);
 
   let filter = {};
   let projection = {};
@@ -48,6 +52,7 @@ router.get('/cards', (req, res, next) => {
       res.json(results);
     })
     .catch(err => {
+      console.log(err);
       next(err);
     });
 });

@@ -19,7 +19,7 @@ const seedUsers = require('../db/seed/users');
 
 const sinon = require('sinon');
 const sandbox = sinon.createSandbox();
-describe('Card Test', function () {
+describe.only('Card Test', function () {
   let token;
   before(function () {
     return mongoose.connect(TEST_DATABASE_URL, {autoIndex: false});
