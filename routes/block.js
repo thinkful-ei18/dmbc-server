@@ -79,6 +79,10 @@ router.put('/block/:id/cards', (req, res, next) => {
       );
     })
     .then(response => {
+      return Block.findById(req.params.id)
+        .populate('cards');
+    })
+    .then(response => {
       res.status(201).json(response);
     })
     .catch(err => {
