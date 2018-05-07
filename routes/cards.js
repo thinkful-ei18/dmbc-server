@@ -236,13 +236,13 @@ router.put('/cards/:id/rate', (req, res, next) => {
   }
 
   /***** Never trust users - validate input *****/
-  const options = { new: true };
 
-  Card.findById({_id: id})
+  Card.findById(id)
     .then(result => {
       if (result) {
-        result.rating.push(rating);
-        return Card.findByIdAndUpdate(id, {rating: result.rating}, options);
+        result.ratingScore += rating;
+        result.ratingCount ++;
+        return result.save();
       } else {
         next();
       }
