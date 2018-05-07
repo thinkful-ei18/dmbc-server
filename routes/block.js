@@ -97,6 +97,9 @@ router.put('/block/:id/select', (req, res, next) => {
     { selectedCard: selection },
     { new: true }
   )
+    .then(() => {
+      return Block.findById(req.params.id).populate('cards');
+    })
     .then(response => {
       res.status(201).json(response);
     })
