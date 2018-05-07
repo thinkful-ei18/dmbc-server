@@ -25,10 +25,10 @@ router.get('/itinerary', (req, res, next) => {
         {
           path: 'blocks',
           model: 'Block',
-          // populate: {
-          //   path: 'cards',
-          //   model: 'Card'
-          // }
+          populate: {
+            path: 'cards',
+            model: 'Card'
+          }
         }, {
           path: 'destination',
           model: 'Destination'
