@@ -4,6 +4,10 @@
     "name": "Foo Bar",
     "description": "Bar of Foos",
     "address": "1152 Foobar Street, BarFoo, FB",
+    "location": {
+      "type": "Point",
+      "coordinates": [-99.10134979999998, 19.2464696]
+    },
     "latitude": 19.2464696,
     "longitude": -99.10134979999998,
     "hours": "12pm - 8pm",
@@ -17,8 +21,13 @@
     "description": "Bar of Foos",
     "address": "1152 Foobar Street, BarFoo, FB",
     "hours": "12pm - 8pm",
-    "latitude": 19.2464696,
-    "longitude": -99.10134979999998,
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -99.10134979999998,
+        19.2464696
+      ]
+    },
     "ratingScore": 2,
     "ratingCount": 2,
     "_id": "5ae8b0da051d8c03b085e712"
@@ -29,8 +38,13 @@
     "description": "Something",
     "address": "1152 Foobar Street, BarFoo, FB",
     "hours": "12pm - 8pm",
-    "latitude": 19.2464696,
-    "longitude": -99.10134979999998,
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -99.10134979999998,
+        19.2464696
+      ]
+    },
     "ratingScore": 9,
     "ratingCount": 2,
     "rating": [2],
@@ -42,8 +56,13 @@
     "description": "Bar of Foos",
     "address": "1152 Foobar Street, BarFoo, FB",
     "hours": "12pm - 8pm",
-    "latitude": 19.2464696,
-    "longitude": -99.10134979999998,
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -99.10134979999998,
+        13.2464696
+      ]
+    },
     "ratingScore": 7,
     "ratingCount": 2,
     "_id": "5ae8b12ea6177c18e4badabe"

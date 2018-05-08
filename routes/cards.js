@@ -5,18 +5,20 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const passport = require('passport');
 
-const { Card } = require('../models/card');
-const { User } = require('../models/user');
+const {Card} = require('../models/card');
+const {User} = require('../models/user');
 
-router.use(
-  passport.authenticate('jwt', { session: false, failWithError: true })
-);
+router.use(passport.authenticate('jwt', {
+  session: false,
+  failWithError: true
+}));
 
 function validateAmbassador(userId) {
   if (!userId) {
     return Promise.reject();
   }
-  return User.findOne({ _id: userId })
+  return User
+    .findOne({_id: userId})
     .then(result => {
       if (!result) {
         return Promise.reject('InvalidUser');
@@ -28,9 +30,20 @@ function validateAmbassador(userId) {
 
 /* ========== GET/READ ALL ITEM ========== */
 router.get('/cards', (req, res, next) => {
-  const searchTerm = req.query.searchTerm;
+  const {searchTerm, distance, lat, lng} = req.query;
 
-  let filter = {};
+  let filter = {
+    location: {
+      $geoWithin: {
+        $center: [
+          [
+            lng, lat
+          ],
+          (distance / 3963.2)
+        ]
+      }
+    }
+  };
   let projection = {};
 
   if (searchTerm) {
@@ -42,7 +55,8 @@ router.get('/cards', (req, res, next) => {
     };
   }
 
-  Card.find(filter, projection)
+  Card
+    .find(filter, projection)
     .sort(projection)
     .then(results => {
       res.json(results);
@@ -62,7 +76,8 @@ router.get('/cards/:id', (req, res, next) => {
     return next(err);
   }
 
-  Card.findOne({_id: id})
+  Card
+    .findOne({_id: id})
     .then(result => {
       if (result) {
         res.json(result);
@@ -85,7 +100,8 @@ router.get('/cards/:ambassador', (req, res, next) => {
     return next(err);
   }
 
-  Card.find({ambassador})
+  Card
+    .find({ambassador})
     .then(result => {
       if (result.length > 0) {
         res.json(result);
@@ -101,7 +117,15 @@ router.get('/cards/:ambassador', (req, res, next) => {
 /* ========== POST/CREATE AN ITEM ========== */
 router.post('/cards', (req, res, next) => {
   const ambassador = req.user.id;
-  const { name, description, address, hours, latitude, longitude, image } = req.body;
+  const {
+    name,
+    description,
+    address,
+    hours,
+    latitude,
+    longitude,
+    image
+  } = req.body;
 
   const requiredFields = ['name', 'description', 'address', 'hours'];
   const hasFields = requiredFields.every(field => {
@@ -114,69 +138,71 @@ router.post('/cards', (req, res, next) => {
   });
 
   if (!hasFields) {
-    return res.status(422).json({
-      code: 422,
-      reason: 'ValidationError',
-      message: 'Missing field',
-      location: 'hasFields'
-    });
+    return res
+      .status(422)
+      .json({code: 422, reason: 'ValidationError', message: 'Missing field', location: 'hasFields'});
   }
 
   if (!stringField) {
-    return res.status(422).json({
-      code: 422,
-      reason: 'ValidationError',
-      message: 'Incorrect field type: expected string',
-      location: 'stringField'
-    });
+    return res
+      .status(422)
+      .json({code: 422, reason: 'ValidationError', message: 'Incorrect field type: expected string', location: 'stringField'});
   }
 
   const trimmedField = stringFields.every(field => {
-    return req.body[field].trim() === req.body[field];
+    return req
+      .body[field]
+      .trim() === req.body[field];
   });
 
   if (!trimmedField) {
-    return res.status(422).json({
-      code: 422,
-      reason: 'ValidationError',
-      message: 'Field cannot start or end with whitespace',
-      location: 'trimmedField'
-    });
+    return res
+      .status(422)
+      .json({code: 422, reason: 'ValidationError', message: 'Field cannot start or end with whitespace', location: 'trimmedField'});
   }
 
   const newCard = {
-    name, 
-    description, 
-    address, 
-    hours, 
+    name,
+    description,
+    address,
+    hours,
     ambassador,
-    latitude, 
+    latitude,
     longitude,
     image
   };
 
-  validateAmbassador(ambassador)
-    .then(() => Card.create(newCard))
-    .then(result => {
-      res.location(`${req.originalUrl}/${result.id}`).status(201).json(result);
-    })
-    .catch(err => {
-      if (err === 'InvalidUser') {
-        err = new Error('The ambassador is not valid user');
-        err.status = 400;
-      }
-      if (err === 'NotAmbassador') {
-        err = new Error('The user is not an ambassador');
-        err.status = 400;
-      }
-      next(err);
-    });
+  validateAmbassador(ambassador).then(() => Card.create(newCard)).then(result => {
+    res
+      .location(`${req.originalUrl}/${result.id}`)
+      .status(201)
+      .json(result);
+  }).catch(err => {
+    if (err === 'InvalidUser') {
+      err = new Error('The ambassador is not valid user');
+      err.status = 400;
+    }
+    if (err === 'NotAmbassador') {
+      err = new Error('The user is not an ambassador');
+      err.status = 400;
+    }
+    next(err);
+  });
 });
 
 /* ========== PUT/UPDATE A SINGLE ITEM ========== */
 router.put('/cards/:id', (req, res, next) => {
-  const { id } = req.params;
-  const { name, description, address, hours, ambassador, rating, tips, image } = req.body;
+  const {id} = req.params;
+  const {
+    name,
+    description,
+    address,
+    hours,
+    ambassador,
+    rating,
+    tips,
+    image
+  } = req.body;
 
   /***** Never trust users - validate input *****/
   if (!name) {
@@ -197,37 +223,36 @@ router.put('/cards/:id', (req, res, next) => {
     return next(err);
   }
 
-  const updateItem = { 
-    name, 
-    description, 
-    address, 
-    hours, 
-    ambassador, 
-    rating, 
+  const updateItem = {
+    name,
+    description,
+    address,
+    hours,
+    ambassador,
+    rating,
     tips,
     image
   };
 
-  const options = { new: true };
+  const options = {
+    new: true
+  };
 
-  validateAmbassador(ambassador)
-    .then(() => Card.findByIdAndUpdate(id, updateItem, options))
-    .then(result => {
-      if (result) {
-        res.json(result);
-      } else {
-        next();
-      }
-    })
-    .catch(err => {
-      next(err);
-    });
+  validateAmbassador(ambassador).then(() => Card.findByIdAndUpdate(id, updateItem, options)).then(result => {
+    if (result) {
+      res.json(result);
+    } else {
+      next();
+    }
+  }).catch(err => {
+    next(err);
+  });
 });
 
 /* ========== PUT/UPDATE Rating ========== */
 router.put('/cards/:id/rate', (req, res, next) => {
-  const { id } = req.params;
-  const { rating } = req.body;
+  const {id} = req.params;
+  const {rating} = req.body;
 
   if (!rating) {
     const err = new Error('Rating is empty');
@@ -237,11 +262,12 @@ router.put('/cards/:id/rate', (req, res, next) => {
 
   /***** Never trust users - validate input *****/
 
-  Card.findById(id)
+  Card
+    .findById(id)
     .then(result => {
       if (result) {
         result.ratingScore += parseInt(rating, 10);
-        result.ratingCount ++;
+        result.ratingCount++;
         return result.save();
       } else {
         next();
@@ -257,8 +283,8 @@ router.put('/cards/:id/rate', (req, res, next) => {
 
 /* ========== PUT/UPDATE Tips ========== */
 router.put('/cards/:id/tips', (req, res, next) => {
-  const { id } = req.params;
-  const { tips } = req.body;
+  const {id} = req.params;
+  const {tips} = req.body;
 
   if (!tips) {
     const err = new Error('Tips is empty');
@@ -267,13 +293,20 @@ router.put('/cards/:id/tips', (req, res, next) => {
   }
 
   /***** Never trust users - validate input *****/
-  const options = { new: true };
+  const options = {
+    new: true
+  };
 
-  Card.findById({_id: id})
+  Card
+    .findById({_id: id})
     .then(result => {
       if (result) {
-        result.tips.push(tips);
-        return Card.findByIdAndUpdate(id, {tips: result.tips}, options);
+        result
+          .tips
+          .push(tips);
+        return Card.findByIdAndUpdate(id, {
+          tips: result.tips
+        }, options);
       } else {
         next();
       }
@@ -290,10 +323,13 @@ router.put('/cards/:id/tips', (req, res, next) => {
 router.delete('/cards/:id', (req, res, next) => {
   const {id} = req.params;
 
-  Card.findOneAndRemove({_id: id})
+  Card
+    .findOneAndRemove({_id: id})
     .then(count => {
       if (count) {
-        res.status(204).end();
+        res
+          .status(204)
+          .end();
       } else {
         next();
       }
