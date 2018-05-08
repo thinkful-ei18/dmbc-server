@@ -240,7 +240,7 @@ router.put('/cards/:id/rate', (req, res, next) => {
   Card.findById(id)
     .then(result => {
       if (result) {
-        result.ratingScore += rating;
+        result.ratingScore += parseInt(rating, 10);
         result.ratingCount ++;
         return result.save();
       } else {
