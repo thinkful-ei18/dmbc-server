@@ -58,15 +58,20 @@ router.get('/itineraries', (req, res, next) => {
 
 router.get('/itineraries/:id', (req, res, next) => {
   Itinerary
-    .find({_id: req.params.id, ambassador: req.user.id})
-    .populate({
-      path: 'blocks',
-      model: 'Block',
-      populate: {
-        path: 'cards',
-        model: 'Card'
+    .findById(req.params.id)
+    .populate([
+      {
+        path: 'blocks',
+        model: 'Block',
+        populate: {
+          path: 'cards',
+          model: 'Card'
+        }
+      }, {
+        path: 'destination',
+        model: 'Destination'
       }
-    })
+    ])
     .then(response => {
       res.json(response);
     })
