@@ -155,7 +155,7 @@ describe('Card Test', function () {
       let response;
       return chai
         .request(app)
-        .get('/api/cards')
+        .get('/api/cards?distance=5&lng=-99.10134979999998&lat=19.2464696')
         .set('authorization', `Bearer ${token}`)
         .then(_response => {
           response = _response;
@@ -169,13 +169,7 @@ describe('Card Test', function () {
             .an('array');
           expect(response.body.length)
             .to
-            .eql(4);
-          return Card.count();
-        })
-        .then(count => {
-          expect(count)
-            .to
-            .equal(response.body.length);
+            .eql(3);
         });
     });
 
@@ -183,7 +177,7 @@ describe('Card Test', function () {
       let response;
       return chai
         .request(app)
-        .get('/api/cards?searchTerm=test')
+        .get('/api/cards?searchTerm=test&distance=5&lng=-99.10134979999998&lat=19.2464696')
         .set('authorization', `Bearer ${token}`)
         .then(_response => {
           response = _response;
@@ -205,7 +199,7 @@ describe('Card Test', function () {
       let item;
       return chai
         .request(app)
-        .get('/api/cards')
+        .get('/api/cards?&distance=5&lng=-99.10134979999998&lat=19.2464696')
         .set('authorization', `Bearer ${token}`)
         .then(_response => {
           item = _response.body[0];
@@ -231,7 +225,7 @@ describe('Card Test', function () {
         .throws('TypeError');
       return chai
         .request(app)
-        .get('/api/cards')
+        .get('/api/cards?searchTerm=test&distance=5&lng=-99.10134979999998&lat=19.2464696')
         .set('authorization', `Bearer ${token}`)
         .then(spy)
         .catch(err => {
@@ -256,7 +250,7 @@ describe('Card Test', function () {
       let itemId;
       return chai
         .request(app)
-        .get('/api/cards')
+        .get('/api/cards?searchTerm=test&distance=5&lng=-99.10134979999998&lat=19.2464696')
         .set('authorization', `Bearer ${token}`)
         .then(response => {
           itemId = response.body[0].id;

@@ -2,8 +2,13 @@
   {
     "locationName": "Mexico City",
     "tags": ["I have a kid"],
-    "latitude": 19.2464696,
-    "longitude": -99.10134979999998,
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -99.10134979999998,
+        19.2464696
+      ]
+    },
     "distance": 5,
     "_id": "122222222222222222222200"
   }

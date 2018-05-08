@@ -88,8 +88,10 @@ router.post('/itinerary', (req, res, next) => {
   let ambassador;
 
   let newDestination = {
-    latitude: destination.location.lat,
-    longitude: destination.location.lng,
+    location: {
+      type: 'Point',
+      coordinates: [destination.location.lng, destination.location.lat]
+    },
     locationName: destination.label,
     tags,
     distance

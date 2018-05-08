@@ -4,10 +4,14 @@ const mongoose = require('mongoose');
 const destinationSchema = mongoose.Schema({
   locationName: { type: String, required: true },
   tags: [{ type: String }],
-  latitude: { type: String, required: true },
-  longitude: { type: String, required: true },
+  location: {
+    type: { type: String },
+    coordinates: []
+  },
   distance: { type: Number, required: true } // calculate business logic with this https://www.movable-type.co.uk/scripts/latlong.html
 });
+
+destinationSchema.index({ location: '2dsphere' });
 
 destinationSchema.set('toObject', {
   transform: function(doc, ret) {

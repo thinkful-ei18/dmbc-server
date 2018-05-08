@@ -305,7 +305,7 @@ describe('Itinerary Test', function () {
   });
 
   describe('POST /itinerary', function () {
-    it('should post a new card with proper attributes', function () {
+    it('should post a new itinerary with proper attributes', function () {
       let newDestination = {
         label: 'Mexico City',
         location: {

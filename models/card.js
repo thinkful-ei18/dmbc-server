@@ -5,8 +5,10 @@ const cardSchema = mongoose.Schema({
   name: { type: String, required: true, index: true },
   description: { type: String, required: true, index: true },
   address: { type: String, required: true },
-  latitude: { type: String, required: true },
-  longitude: { type: String, required: true },
+  location: {
+    type: {type: String},
+    coordinates: []
+  },
   hours: {type: String, require: true},
   ambassador: { type: mongoose.Schema.Types.ObjectId, ref: 'User'},
   ratingScore: {type: Number, default: 0},
@@ -17,6 +19,7 @@ const cardSchema = mongoose.Schema({
 });
 
 cardSchema.index({name: 'text', description: 'text', tips: 'text'}, { weights: { name: 10, tags: 7,  description: 5, tips: 1 } });
+cardSchema.index({location: '2dsphere'});
 
 cardSchema.set('toObject', {
   transform: function(doc, ret) {
