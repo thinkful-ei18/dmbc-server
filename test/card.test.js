@@ -606,9 +606,12 @@ describe('Card Test', function () {
             .to
             .be
             .an('object');
-          expect(response.body.rating.length)
+          expect(response.body.ratingScore)
             .to
-            .equal(2);
+            .equal(9);
+          expect(response.body.ratingCount)
+            .to
+            .equal(3);
         });
     });
 

@@ -9,7 +9,8 @@ const cardSchema = mongoose.Schema({
   longitude: { type: String, required: true },
   hours: {type: String, require: true},
   ambassador: { type: mongoose.Schema.Types.ObjectId, ref: 'User'},
-  rating: [{type: Number, default: 0}],
+  ratingScore: {type: Number, default: 0},
+  ratingCount: {type: Number, default: 0},
   tips: [{type: String, index: true}],
   tags: [{type: String, index: true}],
   image: {type: String, default: 'something'}
