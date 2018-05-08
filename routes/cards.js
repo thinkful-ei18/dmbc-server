@@ -44,6 +44,7 @@ router.get('/cards', (req, res, next) => {
       }
     }
   };
+  
   let projection = {};
 
   if (searchTerm) {
