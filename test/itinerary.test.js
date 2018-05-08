@@ -265,13 +265,13 @@ describe('Itinerary Test', function () {
         .set('authorization', `Bearer ${token}`)
         .then(_response => {
           item = _response.body;
-          return Itinerary.findById(item[0].id);
+          return Itinerary.findById(item.id);
         })
         .then(response => {
-          expect(item[0].id)
+          expect(item.id)
             .to
             .equal(response.id);
-          expect(item[0].partners)
+          expect(item.partners)
             .to
             .equal(response.partners);
         });
