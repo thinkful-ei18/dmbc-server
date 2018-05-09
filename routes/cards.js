@@ -36,11 +36,11 @@ router.get('/cards', (req, res, next) => {
     filter = {
       location: {
         $geoWithin: {
-          $center: [
+          $centerSphere: [
             [
               lng, lat
             ],
-            (distance / 3963.2)
+            ((distance * 10) / 3963.2)
           ]
         }
       }
@@ -169,8 +169,10 @@ router.post('/cards', (req, res, next) => {
     address,
     hours,
     ambassador,
-    latitude,
-    longitude,
+    location: {
+      type: 'Point',
+      coordinates: [longitude, latitude]
+    },
     image
   };
 
