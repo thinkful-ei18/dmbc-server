@@ -31,19 +31,21 @@ function validateAmbassador(userId) {
 /* ========== GET/READ ALL ITEM ========== */
 router.get('/cards', (req, res, next) => {
   const {searchTerm, distance, lat, lng} = req.query;
-
-  let filter = {
-    location: {
-      $geoWithin: {
-        $center: [
-          [
-            lng, lat
-          ],
-          (distance / 3963.2)
-        ]
+  let filter = {};
+  if (distance && lat && lng) {
+    filter = {
+      location: {
+        $geoWithin: {
+          $center: [
+            [
+              lng, lat
+            ],
+            (distance / 3963.2)
+          ]
+        }
       }
-    }
-  };
+    };
+  }
   let projection = {};
 
   if (searchTerm) {
