@@ -32,6 +32,9 @@ router.get('/itinerary', (req, res, next) => {
         }, {
           path: 'destination',
           model: 'Destination'
+        }, {
+          path: 'ambassador',
+          model: 'User'
         }
       ]
     })
@@ -70,6 +73,9 @@ router.get('/itineraries/:id', (req, res, next) => {
       }, {
         path: 'destination',
         model: 'Destination'
+      }, {
+        path: 'ambassador',
+        model: 'User'
       }
     ])
     .then(response => {
