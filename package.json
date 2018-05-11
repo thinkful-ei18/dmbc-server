@@ -1,5 +1,5 @@
 {
-  "name": "concierge-server",
+  "name": "pley-server",
   "version": "1.0.0",
   "description": "Final project server",
   "main": "index.js",
