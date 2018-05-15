@@ -69,14 +69,23 @@ router.put('/block/:id/cards', (req, res, next) => {
   Block.findById(req.params.id)
     .then(response => {
       let newCards = response.cards;
-      newCards.push(card);
-      return Block.findByIdAndUpdate(
-        req.params.id,
-        {
-          cards: newCards
-        },
-        { new: true }
-      );
+      let result = false;
+      for (let i = 0; i < newCards.length; i ++) {
+        if (newCards[i].toString() === card) {
+          result = true;
+        }
+      }
+      if (!result) {
+        newCards.push(card);
+        return Block.findByIdAndUpdate(
+          req.params.id,
+          {
+            cards: newCards
+          },
+          { new: true }
+        );
+      }
+      return newCards;
     })
     .then(response => {
       return Block.findById(req.params.id)
@@ -108,21 +117,27 @@ router.put('/block/:id/select', (req, res, next) => {
     });
 });
 
-router.delete('/block/:id', (req, res, next) => {
+router.put('/block/:id/removecard', (req, res, next) => {
   const {id} = req.params;
+  const {cardID, cards} = req.body;
+  // console.log(cardID, cards);
+  const newCards = cards.filter(card => card !== cardID);
 
   Block
-    .findOneAndRemove({_id: id})
-    .then(count => {
-      if (count) {
-        res
-          .status(204)
-          .end();
-      } else {
-        next();
-      }
+    .findByIdAndUpdate(
+      {_id: id},
+      {cards: newCards},
+      {new: true}
+    )
+    .then(() => {
+      return Block.findById(req.params.id).populate('cards');
     })
-    .catch(next);
+    .then(response => {
+      res.status(201).json(response);
+    })
+    .catch(err => {
+      next(err);
+    });
 });
 
 module.exports = router;
