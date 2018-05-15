@@ -123,18 +123,18 @@ router.post('/cards', (req, res, next) => {
     name,
     description,
     address,
-    hours,
+    phone,
     latitude,
     longitude,
     image
   } = req.body;
 
-  const requiredFields = ['name', 'description', 'address', 'hours'];
+  const requiredFields = ['name', 'description', 'address', 'phone'];
   const hasFields = requiredFields.every(field => {
     return req.body[field];
   });
 
-  const stringFields = ['name', 'description', 'address', 'hours'];
+  const stringFields = ['name', 'description', 'address', 'phone'];
   const stringField = stringFields.every(field => {
     return field in req.body && typeof req.body[field] === 'string';
   });
@@ -167,7 +167,7 @@ router.post('/cards', (req, res, next) => {
     name,
     description,
     address,
-    hours,
+    phone,
     ambassador,
     location: {
       type: 'Point',

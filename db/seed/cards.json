@@ -8,11 +8,10 @@
       "type": "Point",
       "coordinates": [-99.10134979999998, 19.2464696]
     },
-    "latitude": 19.2464696,
-    "longitude": -99.10134979999998,
-    "hours": "12pm - 8pm",
+    "phone": "123-456-7890",
     "ratingScore": 6,
     "ratingCount": 2,
+    "image": "/static/media/bar-large.jpg",
     "_id": "5ae8ad6ea9ea1724941f76ec"
   },
   {
@@ -20,7 +19,7 @@
     "name": "Foo Bar Test",
     "description": "Bar of Foos",
     "address": "1152 Foobar Street, BarFoo, FB",
-    "hours": "12pm - 8pm",
+    "phone": "123-456-7890",
     "location": {
       "type": "Point",
       "coordinates": [
@@ -30,6 +29,7 @@
     },
     "ratingScore": 2,
     "ratingCount": 2,
+    "image": "/static/media/bar-large.jpg",
     "_id": "5ae8b0da051d8c03b085e712"
   },
   {
@@ -37,7 +37,7 @@
     "name": "Testing",
     "description": "Something",
     "address": "1152 Foobar Street, BarFoo, FB",
-    "hours": "12pm - 8pm",
+    "phone": "123-456-7890",
     "location": {
       "type": "Point",
       "coordinates": [
@@ -48,6 +48,7 @@
     "ratingScore": 9,
     "ratingCount": 2,
     "rating": [2],
+    "image": "/static/media/bar-large.jpg",
     "_id": "5ae8b0da051d8c03b085e713"
   },
   {
@@ -55,7 +56,7 @@
     "name": "Foo Bar Test1",
     "description": "Bar of Foos",
     "address": "1152 Foobar Street, BarFoo, FB",
-    "hours": "12pm - 8pm",
+    "phone": "123-456-7890",
     "location": {
       "type": "Point",
       "coordinates": [
@@ -65,6 +66,7 @@
     },
     "ratingScore": 7,
     "ratingCount": 2,
+    "image": "/static/media/bar-large.jpg",
     "_id": "5ae8b12ea6177c18e4badabe"
   }
 ]

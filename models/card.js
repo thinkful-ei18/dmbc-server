@@ -9,7 +9,7 @@ const cardSchema = mongoose.Schema({
     type: {type: String},
     coordinates: []
   },
-  hours: {type: String, require: true},
+  phone: {type: String, require: true},
   ambassador: { type: mongoose.Schema.Types.ObjectId, ref: 'User'},
   ratingScore: {type: Number, default: 0},
   ratingCount: {type: Number, default: 0},
