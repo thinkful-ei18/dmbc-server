@@ -117,6 +117,19 @@ router.put('/block/:id/select', (req, res, next) => {
     });
 });
 
+router.put('/block/:id/deselect', (req, res, next) => {
+  Block.findByIdAndUpdate(req.params.id, { selectedCard: null}, { new: true })
+    .then(() => {
+      return Block.findById(req.params.id).populate('cards');
+    })
+    .then(response => {
+      res.status(201).json(response);
+    })
+    .catch(err => {
+      next(err);
+    });
+});
+
 router.put('/block/:id/removecard', (req, res, next) => {
   const {id} = req.params;
   const {cardID, cards} = req.body;
