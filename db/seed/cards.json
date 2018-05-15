@@ -11,7 +11,7 @@
     "phone": "123-456-7890",
     "ratingScore": 6,
     "ratingCount": 2,
-    "image": "/static/media/barPlaceHolder.3cc1eadd.jpg",
+    "image": "/static/media/bar-large.jpg",
     "_id": "5ae8ad6ea9ea1724941f76ec"
   },
   {
@@ -29,7 +29,7 @@
     },
     "ratingScore": 2,
     "ratingCount": 2,
-    "image": "/static/media/barPlaceHolder.3cc1eadd.jpg",
+    "image": "/static/media/bar-large.jpg",
     "_id": "5ae8b0da051d8c03b085e712"
   },
   {
@@ -48,7 +48,7 @@
     "ratingScore": 9,
     "ratingCount": 2,
     "rating": [2],
-    "image": "/static/media/barPlaceHolder.3cc1eadd.jpg",
+    "image": "/static/media/bar-large.jpg",
     "_id": "5ae8b0da051d8c03b085e713"
   },
   {
@@ -66,7 +66,7 @@
     },
     "ratingScore": 7,
     "ratingCount": 2,
-    "image": "/static/media/barPlaceHolder.3cc1eadd.jpg",
+    "image": "/static/media/bar-large.jpg",
     "_id": "5ae8b12ea6177c18e4badabe"
   }
 ]
