@@ -95,6 +95,11 @@ router.post('/itinerary', (req, res, next) => {
     distance,
     tags
   } = req.body;
+  
+  let locationName = destination.gmaps.address_components;
+  let cityName = locationName.find(component => {
+    return component.types[0] === 'locality';
+  });
 
   let ambassador;
 
@@ -103,7 +108,7 @@ router.post('/itinerary', (req, res, next) => {
       type: 'Point',
       coordinates: [destination.location.lng, destination.location.lat]
     },
-    locationName: destination.label,
+    locationName: cityName.long_name,
     tags,
     distance
   };
