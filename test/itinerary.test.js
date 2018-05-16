@@ -307,7 +307,14 @@ describe('Itinerary Test', function () {
   describe('POST /itinerary', function () {
     it('should post a new itinerary with proper attributes', function () {
       let newDestination = {
-        label: 'Mexico City',
+        gmaps: {
+          address_components: [
+            {
+              long_name: 'Mexico City',
+              types: ['locality']
+            }
+          ]
+        },
         location: {
           lat: 19.2464696,
           lng: -99.10134979999998
@@ -363,7 +370,14 @@ describe('Itinerary Test', function () {
 
     it('should 400 error when not all fields are present', function () {
       let newDestination = {
-        label: 'Mexico City',
+        gmaps: {
+          address_components: [
+            {
+              long_name: 'Mexico City',
+              types: ['locality']
+            }
+          ]
+        },
         location: {
           lat: 19.2464696,
           lng: -99.10134979999998
