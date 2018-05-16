@@ -153,4 +153,21 @@ router.put('/block/:id/removecard', (req, res, next) => {
     });
 });
 
+router.delete('/block/:id', (req, res, next) => {
+  const {id} = req.params;
+  
+  Block
+    .findOneAndRemove({_id: id})
+    .then(count => {
+      if (count) {
+        res
+          .status(204)
+          .end();
+      } else {
+        next();
+      }
+    })
+    .catch(next);
+});
+
 module.exports = router;
