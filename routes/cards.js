@@ -40,7 +40,7 @@ router.get('/cards', (req, res, next) => {
             [
               lng, lat
             ],
-            ((distance * 10) / 3963.2)
+            ((distance * 2) / 3963.2)
           ]
         }
       }
